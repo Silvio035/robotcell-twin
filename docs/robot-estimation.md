@@ -46,7 +46,7 @@ cycle runs. When it drops (cycle finished or stop) the robots show **Idle**.
 
 ## Objects and ink
 
-`src/estimator/items.ts` tracks the plate, the two parts, the marker and the ink:
+`src/estimator/items.ts` tracks the plate, the parts (`PART_COUNT`, one for now), the marker and the ink:
 
 | Object | Moves when |
 |---|---|
@@ -58,7 +58,7 @@ cycle runs. When it drops (cycle finished or stop) the robots show **Idle**.
 | Marker: holder → gripper → holder | Stäubli gripper closes / opens at the marker holder |
 | Ink of square n | Recorded while the Stäubli holds the marker in "Drawing square n", its tool is at drawing height and inside square n |
 
-A new run (rising `Jaka DI3`) puts the plate with both parts back at the
+A new run (rising `Jaka DI3`) puts the plate with its part back at the
 Jaka, the marker in its holder and clears the ink, as the operator does on
 the real cell.
 
@@ -81,14 +81,11 @@ the real cell.
 | Home, waiting for the plate | home | `Stäubli DI12` high (PLC step 2) |
 | Picking the plate | above / pick at the conveyor end | `Sensor Stäubli` falls |
 | Putting the plate on the table | above / place on the stand | time |
-| Picking part 1 | above / pick at hole 1 | time |
-| Placing part 1 on the board | above / place at slot 1 | `Stäubli DO6` rises *(optional)* |
-| Picking part 2 | above / pick at hole 3 | time |
-| Placing part 2 on the board | above / place at slot 2 → home | `Stäubli DO4` rises |
+| Picking the part | above / pick at hole 1 | time |
+| Placing the part on the board | above / place at the board slot → home | `Stäubli DO4` rises |
 | Home, waiting for the PLC | home | `Stäubli DI14` high (PLC step 4) |
 | Picking the marker | above / pick at the holder | time |
-| Drawing square 1 | square path around slot 1 | `Stäubli DO7` rises *(optional)* |
-| Drawing square 2 | square path around slot 2 | `Stäubli DO7` rises *(optional)* |
+| Drawing the square | square path around the board slot | `Stäubli DO7` rises *(optional)* |
 | Storing the marker | above / place at the holder → home | `Stäubli DO5` rises |
 
 ## What is exact and what is approximate
@@ -97,7 +94,7 @@ the real cell.
 |---|---|
 | Which segment each robot is in | Exact at every PLC event; between events it is an estimate |
 | Jaka plate hand-off, Stäubli plate pick, "parts done", "drawing done" | Exact (handshake signals and sensors) |
-| Part 1 vs part 2, square 1 vs square 2 | Exact if the robot programs pulse `Stäubli DO6` / `DO7`, otherwise timed |
+| End of the square | Exact if the Stäubli program pulses `Stäubli DO7`, otherwise timed |
 | Poses and square paths | **Placeholders** computed from the placeholder layout |
 | Robot geometry | **Placeholder** link lengths, see `src/model/kinematics.ts` |
 | Cell layout | **Placeholder** positions, see `src/model/layout.ts` |

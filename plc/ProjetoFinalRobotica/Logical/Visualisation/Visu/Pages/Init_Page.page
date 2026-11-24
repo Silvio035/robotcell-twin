@@ -30,13 +30,13 @@
           <Text ID="94996" Value="Etapas"/>
           <Text ID="94997" Value="Jaka: placa na esteira"/>
           <Text ID="94998" Value="Esteira: levando a placa"/>
-          <Text ID="94999" Value="Stäubli: placa na mesa, peças no quadro"/>
-          <Text ID="95000" Value="Stäubli: desenhando os quadrados"/>
+          <Text ID="94999" Value="Stäubli: placa na mesa, peça no quadro"/>
+          <Text ID="95000" Value="Stäubli: desenhando o quadrado"/>
           <Text ID="95001" Value="Ciclo concluído"/>
-          <Text ID="95002" Value="Peças no quadro"/>
-          <Text ID="95003" Value="de 2"/>
-          <Text ID="95004" Value="Quadrados"/>
-          <Text ID="95005" Value="de 2"/>
+          <Text ID="95002" Value="Peça no quadro"/>
+          <Text ID="95003" Value="de 1"/>
+          <Text ID="95004" Value="Quadrado"/>
+          <Text ID="95005" Value="de 1"/>
           <Text ID="95006" Value="Tempo de ciclo"/>
           <Text ID="95007" Value="s (máx. 420)"/>
           <Text ID="95008" Value="Ciclos concluídos"/>
@@ -46,22 +46,27 @@
           <Text ID="95012" Value="Esteira"/>
           <Text ID="95013" Value="Stäubli"/>
           <Text ID="95014" Value="Emergência (vermelho = acionada)"/>
-          <Text ID="95015" Value="Cores: cinza = aguardando, amarelo = em andamento, verde = feito"/>
+          <Text ID="95015" Value="Legenda:"/>
           <Text ID="95016" Value="Progresso:"/>
+          <Text ID="95017" Value="Aguardando"/>
+          <Text ID="95018" Value="Em andamento"/>
+          <Text ID="95019" Value="Feito"/>
+          <Text ID="95020" Value="Emergência"/>
+          <Text ID="95021" Value="Peça"/>
         </TextLayer>
         <TextLayer LanguageId="de">
-          <Text ID="94979" Value=""/>
-          <Text ID="94981" Value=""/>
+          <Text ID="94979" Value="Ligar"/>
+          <Text ID="94981" Value="Desligar"/>
           <Text ID="94996" Value="Etapas"/>
           <Text ID="94997" Value="Jaka: placa na esteira"/>
           <Text ID="94998" Value="Esteira: levando a placa"/>
-          <Text ID="94999" Value="Stäubli: placa na mesa, peças no quadro"/>
-          <Text ID="95000" Value="Stäubli: desenhando os quadrados"/>
+          <Text ID="94999" Value="Stäubli: placa na mesa, peça no quadro"/>
+          <Text ID="95000" Value="Stäubli: desenhando o quadrado"/>
           <Text ID="95001" Value="Ciclo concluído"/>
-          <Text ID="95002" Value="Peças no quadro"/>
-          <Text ID="95003" Value="de 2"/>
-          <Text ID="95004" Value="Quadrados"/>
-          <Text ID="95005" Value="de 2"/>
+          <Text ID="95002" Value="Peça no quadro"/>
+          <Text ID="95003" Value="de 1"/>
+          <Text ID="95004" Value="Quadrado"/>
+          <Text ID="95005" Value="de 1"/>
           <Text ID="95006" Value="Tempo de ciclo"/>
           <Text ID="95007" Value="s (máx. 420)"/>
           <Text ID="95008" Value="Ciclos concluídos"/>
@@ -71,22 +76,27 @@
           <Text ID="95012" Value="Esteira"/>
           <Text ID="95013" Value="Stäubli"/>
           <Text ID="95014" Value="Emergência (vermelho = acionada)"/>
-          <Text ID="95015" Value="Cores: cinza = aguardando, amarelo = em andamento, verde = feito"/>
+          <Text ID="95015" Value="Legenda:"/>
           <Text ID="95016" Value="Progresso:"/>
+          <Text ID="95017" Value="Aguardando"/>
+          <Text ID="95018" Value="Em andamento"/>
+          <Text ID="95019" Value="Feito"/>
+          <Text ID="95020" Value="Emergência"/>
+          <Text ID="95021" Value="Peça"/>
         </TextLayer>
         <TextLayer LanguageId="zh-CN">
-          <Text ID="94979" Value=""/>
-          <Text ID="94981" Value=""/>
+          <Text ID="94979" Value="Ligar"/>
+          <Text ID="94981" Value="Desligar"/>
           <Text ID="94996" Value="Etapas"/>
           <Text ID="94997" Value="Jaka: placa na esteira"/>
           <Text ID="94998" Value="Esteira: levando a placa"/>
-          <Text ID="94999" Value="Stäubli: placa na mesa, peças no quadro"/>
-          <Text ID="95000" Value="Stäubli: desenhando os quadrados"/>
+          <Text ID="94999" Value="Stäubli: placa na mesa, peça no quadro"/>
+          <Text ID="95000" Value="Stäubli: desenhando o quadrado"/>
           <Text ID="95001" Value="Ciclo concluído"/>
-          <Text ID="95002" Value="Peças no quadro"/>
-          <Text ID="95003" Value="de 2"/>
-          <Text ID="95004" Value="Quadrados"/>
-          <Text ID="95005" Value="de 2"/>
+          <Text ID="95002" Value="Peça no quadro"/>
+          <Text ID="95003" Value="de 1"/>
+          <Text ID="95004" Value="Quadrado"/>
+          <Text ID="95005" Value="de 1"/>
           <Text ID="95006" Value="Tempo de ciclo"/>
           <Text ID="95007" Value="s (máx. 420)"/>
           <Text ID="95008" Value="Ciclos concluídos"/>
@@ -96,9 +106,44 @@
           <Text ID="95012" Value="Esteira"/>
           <Text ID="95013" Value="Stäubli"/>
           <Text ID="95014" Value="Emergência (vermelho = acionada)"/>
-          <Text ID="95015" Value="Cores: cinza = aguardando, amarelo = em andamento, verde = feito"/>
+          <Text ID="95015" Value="Legenda:"/>
           <Text ID="95016" Value="Progresso:"/>
+          <Text ID="95017" Value="Aguardando"/>
+          <Text ID="95018" Value="Em andamento"/>
+          <Text ID="95019" Value="Feito"/>
+          <Text ID="95020" Value="Emergência"/>
+          <Text ID="95021" Value="Peça"/>
         </TextLayer>
+        <IndexMap>
+          <Index ID="94979" Value="0"/>
+          <Index ID="94981" Value="2"/>
+          <Index ID="94996" Value="17"/>
+          <Index ID="94997" Value="18"/>
+          <Index ID="94998" Value="19"/>
+          <Index ID="94999" Value="20"/>
+          <Index ID="95000" Value="21"/>
+          <Index ID="95001" Value="22"/>
+          <Index ID="95002" Value="23"/>
+          <Index ID="95003" Value="24"/>
+          <Index ID="95004" Value="25"/>
+          <Index ID="95005" Value="26"/>
+          <Index ID="95006" Value="27"/>
+          <Index ID="95007" Value="28"/>
+          <Index ID="95008" Value="29"/>
+          <Index ID="95009" Value="30"/>
+          <Index ID="95010" Value="31"/>
+          <Index ID="95011" Value="32"/>
+          <Index ID="95012" Value="33"/>
+          <Index ID="95013" Value="34"/>
+          <Index ID="95014" Value="35"/>
+          <Index ID="95015" Value="36"/>
+          <Index ID="95016" Value="37"/>
+          <Index ID="95017" Value="38"/>
+          <Index ID="95018" Value="39"/>
+          <Index ID="95019" Value="40"/>
+          <Index ID="95020" Value="41"/>
+          <Index ID="95021" Value="42"/>
+        </IndexMap>
       </TextGroup>
       <Controls>
         <Control ClassId="0x00001002" Name="Ligar">
@@ -507,11 +552,11 @@
         </Control>
         <Control ClassId="0x00001001" Name="Shape_7">
           <Property Name="BackColor" Value="15"/>
-          <Property Name="ColorDatapoint" Value="Source[global].Variable[DataSource.NewProgram.iCorQuadrado1]"/>
+          <Property Name="ColorDatapoint" Value="Source[global].Variable[DataSource.NewProgram.iCorQuadrado]"/>
           <Property Name="ControlID" Value="0"/>
           <Property Name="Description" Value=""/>
           <Property Name="Height" Value="80"/>
-          <Property Name="Left" Value="385"/>
+          <Property Name="Left" Value="445"/>
           <Property Name="StyleClass" Value="Source[relative:StyleGroup].StyleClass[Shape]"/>
           <Property Name="Top" Value="150"/>
           <Property Name="Width" Value="80"/>
@@ -522,51 +567,18 @@
           <Property Name="ControlID" Value="0"/>
           <Property Name="Description" Value=""/>
           <Property Name="Height" Value="70"/>
-          <Property Name="Left" Value="390"/>
+          <Property Name="Left" Value="450"/>
           <Property Name="StyleClass" Value="Source[relative:StyleGroup].StyleClass[Shape]"/>
           <Property Name="Top" Value="155"/>
           <Property Name="Width" Value="70"/>
         </Control>
         <Control ClassId="0x00001001" Name="Shape_9">
           <Property Name="BackColor" Value="252"/>
-          <Property Name="ColorDatapoint" Value="Source[global].Variable[DataSource.NewProgram.iCorPeca1]"/>
+          <Property Name="ColorDatapoint" Value="Source[global].Variable[DataSource.NewProgram.iCorPeca]"/>
           <Property Name="ControlID" Value="0"/>
           <Property Name="Description" Value=""/>
           <Property Name="Height" Value="36"/>
-          <Property Name="Left" Value="407"/>
-          <Property Name="StyleClass" Value="Source[relative:StyleGroup].StyleClass[Shape]"/>
-          <Property Name="Top" Value="172"/>
-          <Property Name="Width" Value="36"/>
-        </Control>
-        <Control ClassId="0x00001001" Name="Shape_10">
-          <Property Name="BackColor" Value="15"/>
-          <Property Name="ColorDatapoint" Value="Source[global].Variable[DataSource.NewProgram.iCorQuadrado2]"/>
-          <Property Name="ControlID" Value="0"/>
-          <Property Name="Description" Value=""/>
-          <Property Name="Height" Value="80"/>
-          <Property Name="Left" Value="505"/>
-          <Property Name="StyleClass" Value="Source[relative:StyleGroup].StyleClass[Shape]"/>
-          <Property Name="Top" Value="150"/>
-          <Property Name="Width" Value="80"/>
-        </Control>
-        <Control ClassId="0x00001001" Name="Shape_11">
-          <Property Name="BackColor" Value="15"/>
-          <Property Name="ColorDatapoint" Value="None"/>
-          <Property Name="ControlID" Value="0"/>
-          <Property Name="Description" Value=""/>
-          <Property Name="Height" Value="70"/>
-          <Property Name="Left" Value="510"/>
-          <Property Name="StyleClass" Value="Source[relative:StyleGroup].StyleClass[Shape]"/>
-          <Property Name="Top" Value="155"/>
-          <Property Name="Width" Value="70"/>
-        </Control>
-        <Control ClassId="0x00001001" Name="Shape_12">
-          <Property Name="BackColor" Value="252"/>
-          <Property Name="ColorDatapoint" Value="Source[global].Variable[DataSource.NewProgram.iCorPeca2]"/>
-          <Property Name="ControlID" Value="0"/>
-          <Property Name="Description" Value=""/>
-          <Property Name="Height" Value="36"/>
-          <Property Name="Left" Value="527"/>
+          <Property Name="Left" Value="467"/>
           <Property Name="StyleClass" Value="Source[relative:StyleGroup].StyleClass[Shape]"/>
           <Property Name="Top" Value="172"/>
           <Property Name="Width" Value="36"/>
@@ -703,7 +715,137 @@
           <Property Name="TextIndexOffset" Value="36"/>
           <Property Name="TextSource" Value="SingleText"/>
           <Property Name="Top" Value="410"/>
-          <Property Name="Width" Value="600"/>
+          <Property Name="Width" Value="70"/>
+        </Control>
+        <Control ClassId="0x00001001" Name="Legenda_Cor1">
+          <Property Name="BackColor" Value="250"/>
+          <Property Name="ColorDatapoint" Value="None"/>
+          <Property Name="ControlID" Value="0"/>
+          <Property Name="Description" Value=""/>
+          <Property Name="Height" Value="14"/>
+          <Property Name="Left" Value="95"/>
+          <Property Name="StyleClass" Value="Source[relative:StyleGroup].StyleClass[Shape]"/>
+          <Property Name="Top" Value="413"/>
+          <Property Name="Width" Value="14"/>
+        </Control>
+        <Control ClassId="0x00001004" Name="Legenda_Texto1">
+          <Property Name="AlignmentHorizontal" Value="Left"/>
+          <Property Name="ControlID" Value="0"/>
+          <Property Name="Description" Value=""/>
+          <Property Name="Height" Value="20"/>
+          <Property Name="Left" Value="115"/>
+          <Property Name="SimulationIndex" Value="0"/>
+          <Property Name="SimulationValue" Value=""/>
+          <Property Name="StyleClass" Value="Source[relative:StyleGroup].StyleClass[Text]"/>
+          <Property Name="TextGroup" Value="Source[embedded].TextGroup"/>
+          <Property Name="TextIndexOffset" Value="38"/>
+          <Property Name="TextSource" Value="SingleText"/>
+          <Property Name="Top" Value="410"/>
+          <Property Name="Width" Value="85"/>
+        </Control>
+        <Control ClassId="0x00001001" Name="Legenda_Cor2">
+          <Property Name="BackColor" Value="46"/>
+          <Property Name="ColorDatapoint" Value="None"/>
+          <Property Name="ControlID" Value="0"/>
+          <Property Name="Description" Value=""/>
+          <Property Name="Height" Value="14"/>
+          <Property Name="Left" Value="205"/>
+          <Property Name="StyleClass" Value="Source[relative:StyleGroup].StyleClass[Shape]"/>
+          <Property Name="Top" Value="413"/>
+          <Property Name="Width" Value="14"/>
+        </Control>
+        <Control ClassId="0x00001004" Name="Legenda_Texto2">
+          <Property Name="AlignmentHorizontal" Value="Left"/>
+          <Property Name="ControlID" Value="0"/>
+          <Property Name="Description" Value=""/>
+          <Property Name="Height" Value="20"/>
+          <Property Name="Left" Value="225"/>
+          <Property Name="SimulationIndex" Value="0"/>
+          <Property Name="SimulationValue" Value=""/>
+          <Property Name="StyleClass" Value="Source[relative:StyleGroup].StyleClass[Text]"/>
+          <Property Name="TextGroup" Value="Source[embedded].TextGroup"/>
+          <Property Name="TextIndexOffset" Value="39"/>
+          <Property Name="TextSource" Value="SingleText"/>
+          <Property Name="Top" Value="410"/>
+          <Property Name="Width" Value="100"/>
+        </Control>
+        <Control ClassId="0x00001001" Name="Legenda_Cor3">
+          <Property Name="BackColor" Value="155"/>
+          <Property Name="ColorDatapoint" Value="None"/>
+          <Property Name="ControlID" Value="0"/>
+          <Property Name="Description" Value=""/>
+          <Property Name="Height" Value="14"/>
+          <Property Name="Left" Value="330"/>
+          <Property Name="StyleClass" Value="Source[relative:StyleGroup].StyleClass[Shape]"/>
+          <Property Name="Top" Value="413"/>
+          <Property Name="Width" Value="14"/>
+        </Control>
+        <Control ClassId="0x00001004" Name="Legenda_Texto3">
+          <Property Name="AlignmentHorizontal" Value="Left"/>
+          <Property Name="ControlID" Value="0"/>
+          <Property Name="Description" Value=""/>
+          <Property Name="Height" Value="20"/>
+          <Property Name="Left" Value="350"/>
+          <Property Name="SimulationIndex" Value="0"/>
+          <Property Name="SimulationValue" Value=""/>
+          <Property Name="StyleClass" Value="Source[relative:StyleGroup].StyleClass[Text]"/>
+          <Property Name="TextGroup" Value="Source[embedded].TextGroup"/>
+          <Property Name="TextIndexOffset" Value="40"/>
+          <Property Name="TextSource" Value="SingleText"/>
+          <Property Name="Top" Value="410"/>
+          <Property Name="Width" Value="50"/>
+        </Control>
+        <Control ClassId="0x00001001" Name="Legenda_Cor4">
+          <Property Name="BackColor" Value="51"/>
+          <Property Name="ColorDatapoint" Value="None"/>
+          <Property Name="ControlID" Value="0"/>
+          <Property Name="Description" Value=""/>
+          <Property Name="Height" Value="14"/>
+          <Property Name="Left" Value="405"/>
+          <Property Name="StyleClass" Value="Source[relative:StyleGroup].StyleClass[Shape]"/>
+          <Property Name="Top" Value="413"/>
+          <Property Name="Width" Value="14"/>
+        </Control>
+        <Control ClassId="0x00001004" Name="Legenda_Texto4">
+          <Property Name="AlignmentHorizontal" Value="Left"/>
+          <Property Name="ControlID" Value="0"/>
+          <Property Name="Description" Value=""/>
+          <Property Name="Height" Value="20"/>
+          <Property Name="Left" Value="425"/>
+          <Property Name="SimulationIndex" Value="0"/>
+          <Property Name="SimulationValue" Value=""/>
+          <Property Name="StyleClass" Value="Source[relative:StyleGroup].StyleClass[Text]"/>
+          <Property Name="TextGroup" Value="Source[embedded].TextGroup"/>
+          <Property Name="TextIndexOffset" Value="41"/>
+          <Property Name="TextSource" Value="SingleText"/>
+          <Property Name="Top" Value="410"/>
+          <Property Name="Width" Value="85"/>
+        </Control>
+        <Control ClassId="0x00001001" Name="Legenda_Cor5">
+          <Property Name="BackColor" Value="204"/>
+          <Property Name="ColorDatapoint" Value="None"/>
+          <Property Name="ControlID" Value="0"/>
+          <Property Name="Description" Value=""/>
+          <Property Name="Height" Value="14"/>
+          <Property Name="Left" Value="515"/>
+          <Property Name="StyleClass" Value="Source[relative:StyleGroup].StyleClass[Shape]"/>
+          <Property Name="Top" Value="413"/>
+          <Property Name="Width" Value="14"/>
+        </Control>
+        <Control ClassId="0x00001004" Name="Legenda_Texto5">
+          <Property Name="AlignmentHorizontal" Value="Left"/>
+          <Property Name="ControlID" Value="0"/>
+          <Property Name="Description" Value=""/>
+          <Property Name="Height" Value="20"/>
+          <Property Name="Left" Value="535"/>
+          <Property Name="SimulationIndex" Value="0"/>
+          <Property Name="SimulationValue" Value=""/>
+          <Property Name="StyleClass" Value="Source[relative:StyleGroup].StyleClass[Text]"/>
+          <Property Name="TextGroup" Value="Source[embedded].TextGroup"/>
+          <Property Name="TextIndexOffset" Value="42"/>
+          <Property Name="TextSource" Value="SingleText"/>
+          <Property Name="Top" Value="410"/>
+          <Property Name="Width" Value="60"/>
         </Control>
         <Control ClassId="0x00001004" Name="Text_21">
           <Property Name="AlignmentHorizontal" Value="Left"/>
@@ -724,12 +866,12 @@
           <Property Name="Border" Value="Source[local].Border[Flat_grey]"/>
           <Property Name="ControlID" Value="0"/>
           <Property Name="Description" Value=""/>
-          <Property Name="EndValue" Value="4"/>
+          <Property Name="EndValue" Value="2"/>
           <Property Name="Height" Value="16"/>
           <Property Name="Left" Value="145"/>
           <Property Name="Range[0].Color" Value="155"/>
           <Property Name="Range[0].Start" Value="0"/>
-          <Property Name="SimulationValue" Value="2"/>
+          <Property Name="SimulationValue" Value="1"/>
           <Property Name="StartValue" Value="0"/>
           <Property Name="StyleClass" Value="Source[relative:StyleGroup].StyleClass[BarGraph]"/>
           <Property Name="Top" Value="439"/>

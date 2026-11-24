@@ -51,8 +51,8 @@ application ([whiteboard-application.md](whiteboard-application.md)).
 | `Jaka_DO7` | DI9371 ch 1 | DONE: plate on the conveyor |
 | `Jaka_DO6` | DI9371 ch 2 | Spare |
 | `Jaka_DO5` | DI9371 ch 3 | Pulse: plate gripped (used by the twin only) |
-| `Staubli_DO4` | DI9371 ch 5 | DONE: plate on the stand, both parts on the board |
-| `Staubli_DO5` | DI9371 ch 6 | DONE: squares drawn, marker stored |
+| `Staubli_DO4` | DI9371 ch 5 | DONE: plate on the stand, part on the board |
+| `Staubli_DO5` | DI9371 ch 6 | DONE: square drawn, marker stored |
 | `Staubli_DO6` | DI9371 ch 7 | Pulse: one part placed |
 | `Staubli_DO7` | DI9371 ch 8 | Pulse: one square drawn |
 | `Sensor_Staubli` | DI9371 ch 9 | Plate at the Stäubli end of the conveyor |
@@ -61,7 +61,7 @@ application ([whiteboard-application.md](whiteboard-application.md)).
 | `Jaka_DI3` | DO9322 ch 1 | CMD: put the plate on the conveyor |
 | `Jaka_DI2` | DO9322 ch 2 | Enable, TRUE while a cycle runs |
 | `Jaka_DI1` | DO9322 ch 3 | Spare |
-| `Staubli_DI12` | DO9322 ch 5 | CMD: plate to the stand, both parts to the board |
+| `Staubli_DI12` | DO9322 ch 5 | CMD: plate to the stand, part to the board |
 | `Staubli_DI13` | DO9322 ch 6 | Enable, TRUE while a cycle runs |
 | `Staubli_DI14` | DO9322 ch 7 | CMD: pick the marker, draw, put it back |
 | `Staubli_DI15` | DO9322 ch 8 | Spare |
@@ -85,7 +85,9 @@ clears DONE. There are no timers in the sequence.
 
 - One run per start: `Ligar` is cleared at the end of the cycle, so the
   operator presses **Ligar** again for the next run (after putting the plate
-  with both parts back at the Jaka and taking the parts off the board).
+  with the part back at the Jaka and taking the part off the board).
+- `NUM_PECAS` (constant in `NewProgram.var`, 1 for now) is the number of
+  parts per run: the counters stop at it and jump to it on the DONE signals.
 - Stop (**Desligar**) or E-stop: every command, enable and conveyor goes
   FALSE and `Etapa` returns to 0. E-stop also clears `Ligar`, so releasing it
   never restarts the cell by itself.
@@ -107,12 +109,13 @@ the panel.*
 | Element | Variable |
 |---|---|
 | Ligar / Desligar | `Ligar` (set to 1 / 0) |
-| Step lamps: Jaka (plate on the conveyor), conveyor, Stäubli parts, drawing, cycle done | `iCorJaka`, `iCorEsteira`, `iCorPecas`, `iCorDesenho`, `iCorConcluido` |
-| Parts on the board, squares, cycle time (s), completed cycles | `iPecasNoQuadro`, `iQuadrados`, `iTempoCiclo_s`, `iContador` |
-| Whiteboard: parts and squares light up | `iCorPeca1/2`, `iCorQuadrado1/2` |
+| Step lamps: Jaka (plate on the conveyor), conveyor, Stäubli part, drawing, cycle done | `iCorJaka`, `iCorEsteira`, `iCorPecas`, `iCorDesenho`, `iCorConcluido` |
+| Part on the board, square, cycle time (s), completed cycles | `iPecasNoQuadro`, `iQuadrados`, `iTempoCiclo_s`, `iContador` |
+| Whiteboard: the part and its square light up | `iCorPeca`, `iCorQuadrado` |
 | Plate position: Jaka / conveyor / Stäubli | `iCorPlacaJaka`, `iCorPlacaEsteira`, `iCorPlacaStaubli` (from `iPlaca`) |
 | E-stop lamp | `iCorEmergencia` |
-| Progress bar 0..4 | `iProgresso` (parts + squares) |
+| Progress bar 0..2 | `iProgresso` (part + square) |
+| Color legend (bottom row) | Fixed swatches: waiting, running, done, E-stop, part |
 
 Lamp colors are palette indexes computed in the PLC, the same technique the
 previous page used: grey 250 = waiting, yellow 46 = running, green 155 =
@@ -120,6 +123,12 @@ done, red 51 = E-stop. The page only uses control types that already existed
 in the project (button, text, shape, bar graph) plus the numeric output of
 the B&R sample. After the first build, adjust positions and fonts in the
 Automation Studio page editor as needed; from then on edit the page there.
+
+The page's texts live in its embedded text group. Each `<Text ID>` needs an
+entry in the group's `<IndexMap>` (ID → index); the buttons (`TextIndex`)
+and text controls (`TextIndexOffset`) refer to that index. Without the
+`IndexMap` every button and label on the panel is blank, which is what
+happened after the page was first rewritten. Here index = ID − 94979.
 
 ## Previous application (Renan's)
 

@@ -6,32 +6,40 @@ PC). The robot programs still have to be written following the table below.
 
 ## The application
 
-On the Jaka side: a plate with 3 holes; two parts stand in holes 1 and 3,
-the middle hole stays free. On the Stäubli table: a stand for the plate, a
+On the Jaka side: a plate with 3 holes; one part stands in hole 1, the
+middle hole stays free for the grippers.
+
+> **One part for now.** The application starts with a single part (one
+> square). The part count is one constant in each place: `NUM_PECAS` in
+> `NewProgram.var` and `PART_COUNT` (from `LAYOUT.plate.partHoles` /
+> `LAYOUT.boardSlots`) in `src/model/layout.ts`. Going back to two parts
+> means raising both, adding a hole and a board slot in the layout, the
+> second part and square on the HMI page and the second pulses in
+> `src/sim/timeline.json`. On the Stäubli table: a stand for the plate, a
 whiteboard and the marker in its holder.
 
 1. The Jaka picks the plate and puts it on the Jaka → Stäubli conveyor.
 2. The conveyor brings the plate to the Stäubli (the only use of the conveyor).
-3. The Stäubli puts the plate on its stand, then takes each part out of the
+3. The Stäubli puts the plate on its stand, then takes the part out of the
    plate and stands it on the board.
-4. The Stäubli picks the marker, draws a square around each part and puts
+4. The Stäubli picks the marker, draws a square around the part and puts
    the marker back in its holder.
 
 The parts are "big-head" parts: a body that fits the plate hole and a
 slightly wider head that rests on the plate. They stay upright the whole
 time (the Stäubli gripper is vertical) and are gripped by the head.
 
-For the next run the operator puts the plate with the two parts back at the
-Jaka, takes the parts off the board and wipes it, then presses **Ligar**.
+For the next run the operator puts the plate with the part back at the
+Jaka, takes the part off the board and wipes it, then presses **Ligar**.
 
 How it fits the assignment:
 
 | Requirement | Fit | Check |
 |---|---|---|
-| Three or more pieces moved in coordination, both robots | Plate + 2 parts + marker; the plate goes from one robot to the other | Confirm with the professor that the plate and the marker count as pieces |
+| Three or more pieces moved in coordination, both robots | Plate + part + marker; the plate goes from one robot to the other | Confirm with the professor that the plate and the marker count as pieces |
 | Controlled by the PLC/HMI, 7 min maximum | One run is well under a minute | Cycle time on the HMI |
 | Layout cannot change, external peripherals allowed | Plate, plate stand, whiteboard and marker holder are peripherals | |
-| Repeatability and precision | Parts taken from holes and squares drawn around them show precision visually | |
+| Repeatability and precision | A part taken from a hole and a square drawn around it show precision visually | |
 
 ## Handshake rule
 
@@ -56,10 +64,10 @@ Only signals that are already wired (Table I) are used. The PLC side is in
 | `Jaka_DO7` | DI 1 | **DONE**: plate on the conveyor |
 | `Jaka_DO5` | DI 3 | Pulse: plate gripped (twin only, optional) |
 | `Staubli_DI13` | DO 6 | **Enable** |
-| `Staubli_DI12` | DO 5 | **CMD**: take the plate, put it on the stand, put both parts on the board |
-| `Staubli_DO4` | DI 5 | **DONE**: parts on the board |
-| `Staubli_DI14` | DO 7 | **CMD**: pick the marker, draw the squares, put the marker back |
-| `Staubli_DO5` | DI 6 | **DONE**: squares drawn, marker stored |
+| `Staubli_DI12` | DO 5 | **CMD**: take the plate, put it on the stand, put the part on the board |
+| `Staubli_DO4` | DI 5 | **DONE**: part on the board |
+| `Staubli_DI14` | DO 7 | **CMD**: pick the marker, draw the square, put the marker back |
+| `Staubli_DO5` | DI 6 | **DONE**: square drawn, marker stored |
 | `Staubli_DO6` | DI 7 | Pulse: one part placed on the board (HMI counter, twin) |
 | `Staubli_DO7` | DI 8 | Pulse: one square drawn (HMI counter, twin) |
 | `Sensor_Jaka` | DI 10 | Plate on the conveyor at the Jaka end |
@@ -72,8 +80,8 @@ Only signals that are already wired (Table I) are used. The PLC side is in
 | Robot | Program |
 |---|---|
 | Jaka | Wait for `DI3` → pick the plate (pulse `DO5`) → place it at the conveyor start → set `DO7` → wait for `DI3` FALSE → clear `DO7` → home |
-| Stäubli, command 1 | Wait for `DI12` → pick the plate at the conveyor end → put it on the stand → part 1: hole → board, pulse `DO6` → part 2: hole → board, pulse `DO6` → home → set `DO4` → wait for `DI12` FALSE → clear `DO4` |
-| Stäubli, command 2 | Wait for `DI14` → pick the marker → square 1 (`movel` at fixed Z), pulse `DO7` → square 2, pulse `DO7` → put the marker back → home → set `DO5` → wait for `DI14` FALSE → clear `DO5` |
+| Stäubli, command 1 | Wait for `DI12` → pick the plate at the conveyor end → put it on the stand → part: hole → board, pulse `DO6` → home → set `DO4` → wait for `DI12` FALSE → clear `DO4` |
+| Stäubli, command 2 | Wait for `DI14` → pick the marker → square around the part (`movel` at fixed Z), pulse `DO7` → put the marker back → home → set `DO5` → wait for `DI14` FALSE → clear `DO5` |
 
 Pulses: about 200 ms, so the PLC (10 ms cycle) and the twin (200 ms packets)
 both see them. Both robots stop when their enable input (`DI2` / `DI13`) goes

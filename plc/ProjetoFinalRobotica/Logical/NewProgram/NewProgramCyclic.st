@@ -7,11 +7,12 @@
  * Created: May 29, 2026
  ********************************************************************
  * Whiteboard application (docs/whiteboard-application.md):
- *   1. Jaka puts the plate (2 parts in its holes) on the conveyor.
+ *   1. Jaka puts the plate (NUM_PECAS parts in its holes) on the conveyor.
  *   2. The conveyor brings the plate to the Staubli.
- *   3. Staubli puts the plate on its table and the two parts on the board.
+ *   3. Staubli puts the plate on its table and the parts on the board.
  *   4. Staubli picks the marker from its table, draws a square around
  *      each part and puts the marker back.
+ * NUM_PECAS (NewProgram.var) is 1 for now: one part, one square.
  * Every robot task uses a four-phase handshake (no timers):
  *   PLC sets CMD -> robot sets DONE -> PLC clears CMD -> robot clears DONE.
  * One run per press of the start button: Ligar is cleared at the end
@@ -54,12 +55,12 @@ PROGRAM _CYCLIC
 					Etapa := 2;
 				END_IF;
 
-			2: (* Staubli: plate on the table, both parts on the board *)
+			2: (* Staubli: plate on the table, parts on the board *)
 				Staubli_DI12 := TRUE;					//CMD Staubli: plate to the table, parts to the board
 				IF Staubli_DO4 THEN
 					Staubli_DI12 := FALSE;				//Staubli done: parts on the board
 					PecasNoQuadro := TRUE;
-					iPecasNoQuadro := 2;
+					iPecasNoQuadro := NUM_PECAS;
 					Etapa := 3;
 				END_IF;
 
@@ -72,7 +73,7 @@ PROGRAM _CYCLIC
 				Staubli_DI14 := TRUE;					//CMD Staubli: pick the marker and draw
 				IF Staubli_DO5 THEN
 					Staubli_DI14 := FALSE;				//Staubli done: squares drawn, marker stored
-					iQuadrados := 2;
+					iQuadrados := NUM_PECAS;
 					Etapa := 5;
 				END_IF;
 
@@ -105,11 +106,11 @@ PROGRAM _CYCLIC
 
 	//Progress counters from the robots' optional pulses (Staubli DO6 = part placed, DO7 = square drawn)
 	PulsoPeca(CLK := Staubli_DO6);
-	IF PulsoPeca.Q AND Etapa = 2 AND iPecasNoQuadro < 2 THEN
+	IF PulsoPeca.Q AND Etapa = 2 AND iPecasNoQuadro < NUM_PECAS THEN
 		iPecasNoQuadro := iPecasNoQuadro + 1;
 	END_IF;
 	PulsoQuadrado(CLK := Staubli_DO7);
-	IF PulsoQuadrado.Q AND Etapa = 4 AND iQuadrados < 2 THEN
+	IF PulsoQuadrado.Q AND Etapa = 4 AND iQuadrados < NUM_PECAS THEN
 		iQuadrados := iQuadrados + 1;
 	END_IF;
 
@@ -135,10 +136,9 @@ PROGRAM _CYCLIC
 	IF CicloConcluido OR Etapa = 5 THEN iCorDesenho := COR_FEITO; ELSIF Etapa = 4 THEN iCorDesenho := COR_ANDAMENTO; ELSE iCorDesenho := COR_ESPERA; END_IF;
 	IF CicloConcluido THEN iCorConcluido := COR_FEITO; ELSIF Etapa = 5 THEN iCorConcluido := COR_ANDAMENTO; ELSE iCorConcluido := COR_ESPERA; END_IF;
 
-	IF iPecasNoQuadro >= 1 THEN iCorPeca1 := COR_PECA; ELSE iCorPeca1 := COR_VAZIO; END_IF;
-	IF iPecasNoQuadro >= 2 THEN iCorPeca2 := COR_PECA; ELSE iCorPeca2 := COR_VAZIO; END_IF;
-	IF iQuadrados >= 1 THEN iCorQuadrado1 := COR_TINTA; ELSE iCorQuadrado1 := COR_QUADRO; END_IF;
-	IF iQuadrados >= 2 THEN iCorQuadrado2 := COR_TINTA; ELSE iCorQuadrado2 := COR_QUADRO; END_IF;
+	//Whiteboard (one part and its square on the HMI)
+	IF iPecasNoQuadro >= 1 THEN iCorPeca := COR_PECA; ELSE iCorPeca := COR_VAZIO; END_IF;
+	IF iQuadrados >= 1 THEN iCorQuadrado := COR_TINTA; ELSE iCorQuadrado := COR_QUADRO; END_IF;
 
 	IF iPlaca = 0 THEN iCorPlacaJaka := COR_FEITO; ELSE iCorPlacaJaka := COR_ESPERA; END_IF;
 	IF iPlaca = 1 THEN iCorPlacaEsteira := COR_FEITO; ELSE iCorPlacaEsteira := COR_ESPERA; END_IF;
@@ -146,7 +146,7 @@ PROGRAM _CYCLIC
 
 	IF NOT Emergencia THEN iCorEmergencia := COR_ALARME; ELSE iCorEmergencia := COR_ESPERA; END_IF;
 
-	iProgresso := iPecasNoQuadro + iQuadrados;	//0..4 on the progress bar
+	iProgresso := iPecasNoQuadro + iQuadrados;	//0..2*NUM_PECAS on the progress bar
 
 	//Digital twin: send the I/O state to the bridge PC (TwinSender.st)
 	TwinSender;

@@ -53,20 +53,18 @@ export const LAYOUT = {
   part: { headDiameter: 30, headHeight: 12, bodyDiameter: 24, bodyHeight: 20 },
   /**
    * Plate with 3 holes in a row (along x) that carries the parts from the
-   * Jaka to the Stäubli. partHoles: holes of part 1 and part 2. gripHole: the
+   * Jaka to the Stäubli. partHoles: hole of each part, in the order the
+   * Stäubli moves them (one part for now, see PART_COUNT). gripHole: the
    * free hole where both grippers take the plate, fingers opening inside it
    * (internal grip), which suits the short stroke of the Jaka gripper.
    */
-  plate: { length: 150, width: 60, thickness: 20, holePitch: 45, partHoles: [0, 2], gripHole: 1 },
+  plate: { length: 150, width: 60, thickness: 20, holePitch: 45, partHoles: [0], gripHole: 1 },
   /** Marker standing tip down in its holder; tipReach = tip below the gripper tip. */
   marker: { length: 130, diameter: 18, tipReach: 60, standOffset: 5 },
   /** Whiteboard on the Stäubli table (centre, size, top surface height). */
   board: { x: -200, y: 300, width: 300, depth: 200, z: 5 },
-  /** Part centres on the board; a square is drawn around each one. */
-  boardSlots: [
-    { x: -270, y: 300 },
-    { x: -130, y: 300 },
-  ],
+  /** Part centres on the board, one per part; a square is drawn around each one. */
+  boardSlots: [{ x: -200, y: 300 }],
   /** Half side of the drawn squares. */
   squareHalf: 45,
   /** Plate centre at the start (Jaka table) and on the Stäubli stand (z = stand top). */
@@ -103,6 +101,14 @@ export function toRobotFrame(robot: RobotId, p: Point3): Point3 {
 export function plateHole(centre: Point2, hole: number): Point2 {
   return { x: centre.x + (hole - 1) * LAYOUT.plate.holePitch, y: centre.y };
 }
+
+/**
+ * Parts per run: one part on the plate, placed on the board, one square
+ * around it. Matches NUM_PECAS in NewProgram.var. To go back to more parts,
+ * add a hole to plate.partHoles and a slot to boardSlots for each one.
+ */
+export const PART_COUNT = LAYOUT.boardSlots.length;
+if (LAYOUT.plate.partHoles.length !== PART_COUNT) throw new Error('LAYOUT: one plate hole per board slot');
 
 /** Total height of a standing part. */
 export const PART_HEIGHT = LAYOUT.part.bodyHeight + LAYOUT.part.headHeight;

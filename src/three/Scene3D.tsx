@@ -5,7 +5,7 @@ import { useFrame } from '@react-three/fiber';
 import { useMemo, useRef } from 'react';
 import { CanvasTexture, Group, MeshStandardMaterial, RepeatWrapping } from 'three';
 import type { SignalId } from '../model/cell';
-import { LAYOUT, PART_HEIGHT, plateHole, type ConveyorLayout, type Point2 } from '../model/layout';
+import { LAYOUT, PART_COUNT, PART_HEIGHT, plateHole, type ConveyorLayout, type Point2 } from '../model/layout';
 import { signalValue } from '../model/messages';
 import { useTwinStore } from '../state/store';
 import { frameTime, robotAt } from './frame';
@@ -143,7 +143,7 @@ function PartMesh({ refCb }: { refCb: (g: Group | null) => void }) {
   );
 }
 
-/** Plate (origin at its bottom centre), the two parts and the marker. */
+/** Plate (origin at its bottom centre), the parts and the marker. */
 export function Items3D() {
   const plateRef = useRef<Group>(null);
   const markerRef = useRef<Group>(null);
@@ -212,7 +212,7 @@ export function Items3D() {
           </mesh>
         ))}
       </group>
-      {[0, 1].map((i) => (
+      {Array.from({ length: PART_COUNT }, (_, i) => (
         <PartMesh key={i} refCb={(g) => void (partRefs.current[i] = g)} />
       ))}
       <group ref={markerRef}>
