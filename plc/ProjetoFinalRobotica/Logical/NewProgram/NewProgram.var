@@ -17,11 +17,11 @@ VAR
 	Jaka_DI3 : BOOL; (*CMD: put the plate on the conveyor*)
 	Jaka_DI2 : BOOL; (*enable*)
 	Jaka_DI1 : BOOL; (*spare*)
-	Staubli_DO4 : BOOL; (*DONE: plate on the table, parts on the board*)
-	Staubli_DO5 : BOOL; (*DONE: squares drawn, marker stored*)
+	Staubli_DO4 : BOOL; (*DONE: plate on the table, part on the board*)
+	Staubli_DO5 : BOOL; (*DONE: square drawn, marker stored*)
 	Staubli_DO6 : BOOL; (*pulse: one part placed*)
 	Staubli_DO7 : BOOL; (*pulse: one square drawn*)
-	Staubli_DI12 : BOOL; (*CMD: plate to the table, parts to the board*)
+	Staubli_DI12 : BOOL; (*CMD: plate to the table, part to the board*)
 	Staubli_DI13 : BOOL; (*enable*)
 	Staubli_DI14 : BOOL; (*CMD: pick the marker and draw*)
 	Staubli_DI15 : BOOL; (*spare*)
@@ -31,6 +31,9 @@ VAR
 	Sensor_Staubli : BOOL;
 END_VAR
 (* Sequence *)
+VAR CONSTANT
+	NUM_PECAS : INT := 1; (*parts on the plate per run; one square is drawn around each*)
+END_VAR
 VAR
 	Ligar : BOOL; (*start request from the HMI, cleared at the end of the cycle*)
 	Etapa : INT; (*0 idle, 1 plate to Staubli, 2 parts to board, 3 wait, 4 drawing, 5 finishing*)
@@ -45,20 +48,18 @@ VAR
 END_VAR
 (* HMI (Init_Page) *)
 VAR
-	iPecasNoQuadro : INT; (*0..2*)
-	iQuadrados : INT; (*0..2*)
+	iPecasNoQuadro : INT; (*0..NUM_PECAS*)
+	iQuadrados : INT; (*0..NUM_PECAS*)
 	iTempoCiclo_s : INT; (*seconds*)
 	iPlaca : INT; (*plate: 0 Jaka, 1 conveyor, 2 Staubli*)
-	iProgresso : INT; (*0..4*)
+	iProgresso : INT; (*0..2*NUM_PECAS*)
 	iCorJaka : INT;
 	iCorEsteira : INT;
 	iCorPecas : INT;
 	iCorDesenho : INT;
 	iCorConcluido : INT;
-	iCorPeca1 : INT;
-	iCorPeca2 : INT;
-	iCorQuadrado1 : INT;
-	iCorQuadrado2 : INT;
+	iCorPeca : INT;
+	iCorQuadrado : INT;
 	iCorPlacaJaka : INT;
 	iCorPlacaEsteira : INT;
 	iCorPlacaStaubli : INT;
