@@ -1,7 +1,7 @@
 import { toolPoint, type ItemsEstimate } from '../estimator/items';
 import { useRobotView } from '../hooks/useRobotView';
 import type { RobotId } from '../model/cell';
-import type { Point3 } from '../model/layout';
+import { PART_COUNT, type Point3 } from '../model/layout';
 import { POSES_ARE_PLACEHOLDERS } from '../model/poses';
 import { ROBOT_IDS, ROBOTS, type JointDef } from '../model/robots';
 import { useTwinStore } from '../state/store';
@@ -19,7 +19,8 @@ function heldItem(robot: RobotId, items: ItemsEstimate | null): string {
   if (items.plate === (robot === 'jaka' ? 'jakaGripper' : 'staubliGripper')) return 'the plate';
   if (robot === 'staubli' && items.marker === 'gripper') return 'the marker';
   const part = robot === 'staubli' ? items.parts.indexOf('gripper') : -1;
-  return part >= 0 ? `part ${part + 1}` : 'something';
+  if (part < 0) return 'something';
+  return PART_COUNT > 1 ? `part ${part + 1}` : 'the part';
 }
 
 function RobotCard({ robot, now }: { robot: RobotId; now: number }) {

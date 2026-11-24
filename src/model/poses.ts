@@ -39,10 +39,6 @@ const beltStart = LAYOUT.conveyors.jakaToStaubli.from;
 const beltEnd = LAYOUT.conveyors.jakaToStaubli.to;
 const spot = LAYOUT.staubliPlateSpot;
 const holder = LAYOUT.staubliMarkerHolder;
-/** A part in the plate stands on the plate's bottom surface. */
-const holeA = plateHole(spot, plate.partHoles[0]!);
-const holeB = plateHole(spot, plate.partHoles[1]!);
-const [slot1, slot2] = LAYOUT.boardSlots as [Point2, Point2];
 
 /** Jaka Minicobo, [J1..J6] in degrees. */
 export const JAKA_POSES = {
@@ -60,17 +56,31 @@ export const STAUBLI_POSES = {
   pickPlate: staubli(at(beltEnd, plateGrip(beltTop))),
   abovePlateSpot: staubli(at(spot, top)),
   placePlate: staubli(at(spot, plateGrip(spot.z))),
-  aboveHole1: staubli(at(holeA, top)),
-  pickHole1: staubli(at(holeA, partGrip(spot.z))),
-  aboveHole2: staubli(at(holeB, top)),
-  pickHole2: staubli(at(holeB, partGrip(spot.z))),
-  aboveSlot1: staubli(at(slot1, top)),
-  placeSlot1: staubli(at(slot1, partGrip(board.z))),
-  aboveSlot2: staubli(at(slot2, top)),
-  placeSlot2: staubli(at(slot2, partGrip(board.z))),
   aboveHolder: staubli(at(holder, top)),
   pickHolder: staubli(at(holder, markerGrip(holder.z))),
 } satisfies Record<string, Pose>;
+
+export interface PartPoses {
+  aboveHole: Pose;
+  pickHole: Pose;
+  aboveSlot: Pose;
+  placeSlot: Pose;
+}
+
+/**
+ * Stäubli poses for each part: pick it from its plate hole (a part in the
+ * plate stands on the plate's bottom surface) and place it on its board slot.
+ */
+export const STAUBLI_PART_POSES: readonly PartPoses[] = plate.partHoles.map((h, i) => {
+  const hole = plateHole(spot, h);
+  const slot = LAYOUT.boardSlots[i]!;
+  return {
+    aboveHole: staubli(at(hole, top)),
+    pickHole: staubli(at(hole, partGrip(spot.z))),
+    aboveSlot: staubli(at(slot, top)),
+    placeSlot: staubli(at(slot, partGrip(board.z))),
+  };
+});
 
 const EDGE_STEPS = 4;
 
@@ -101,5 +111,5 @@ function squarePath(centre: Point2): Pose[] {
   return path;
 }
 
-/** Drawing paths for the squares around part 1 and part 2. */
-export const STAUBLI_SQUARES: readonly [Pose[], Pose[]] = [squarePath(slot1), squarePath(slot2)];
+/** Drawing path of the square around each part. */
+export const STAUBLI_SQUARES: readonly Pose[][] = LAYOUT.boardSlots.map(squarePath);

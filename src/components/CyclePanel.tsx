@@ -1,5 +1,6 @@
 import { config } from '../config';
 import { plcStep, STEP_LABELS } from '../estimator/items';
+import { PART_COUNT } from '../model/layout';
 import { useTwinStore } from '../state/store';
 
 /** Assignment limit for one run. */
@@ -27,9 +28,9 @@ export function CyclePanel({ now }: { now: number }) {
         <dt>Step</dt>
         <dd>{step === null ? '—' : `${step} · ${STEP_LABELS[step] ?? 'unknown'}`}</dd>
         <dt>Parts on the board</dt>
-        <dd>{items ? `${items.partsOnBoard} / 2` : '—'}</dd>
+        <dd>{items ? `${items.partsOnBoard} / ${PART_COUNT}` : '—'}</dd>
         <dt>Squares drawn</dt>
-        <dd>{items ? `${items.squaresDone} / 2` : '—'}</dd>
+        <dd>{items ? `${items.squaresDone} / ${PART_COUNT}` : '—'}</dd>
         <dt>Cycle time</dt>
         <dd className={overLimit ? 'error' : ''}>
           {elapsed === null ? '—' : `${formatDuration(elapsed)} of 7:00`}

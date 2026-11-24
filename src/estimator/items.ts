@@ -1,4 +1,4 @@
-// Estimates where the plate, the two parts and the marker are, and the ink on
+// Estimates where the plate, the parts (PART_COUNT) and the marker are, and the ink on
 // the board, from the PLC I/O and the robots' estimated gripper state
 // (whiteboard application, docs/whiteboard-application.md).
 //
@@ -15,10 +15,10 @@
 
 import type { RobotId, SignalId } from '../model/cell';
 import { jakaFk, scaraFk } from '../model/kinematics';
-import { LAYOUT, toCellFrame, type Point2, type Point3 } from '../model/layout';
+import { LAYOUT, PART_COUNT, toCellFrame, type Point2, type Point3 } from '../model/layout';
 import { signalValue, type PlcIoSnapshot } from '../model/messages';
 import { DRAW_Z } from '../model/poses';
-import type { ItemId, RobotEstimate, TaskDef } from './engine';
+import type { RobotEstimate, SegmentMeta, TaskDef } from './engine';
 
 export type PlatePlace = 'jakaTable' | 'jakaGripper' | 'belt' | 'staubliGripper' | 'staubliTable';
 export type PartPlace = 'plate' | 'gripper' | 'board';
@@ -30,9 +30,11 @@ export interface ItemsState {
   belt: number;
   travelMs: number;
   conveyorOnAt: number | null;
-  parts: [PartPlace, PartPlace];
+  /** One entry per part (PART_COUNT). */
+  parts: PartPlace[];
   marker: MarkerPlace;
-  ink: [Point2[], Point2[]];
+  /** Ink of the square around each part. */
+  ink: Point2[][];
   squaresDone: number;
   cycleStartedAt: number | null;
   cycleEndedAt: number | null;
@@ -44,9 +46,9 @@ export interface ItemsState {
 export interface ItemsEstimate {
   plate: PlatePlace;
   belt: number;
-  parts: readonly [PartPlace, PartPlace];
+  parts: readonly PartPlace[];
   marker: MarkerPlace;
-  ink: readonly [readonly Point2[], readonly Point2[]];
+  ink: readonly (readonly Point2[])[];
   partsOnBoard: number;
   squaresDone: number;
   cycleStartedAt: number | null;
@@ -64,15 +66,18 @@ const INK_STEP = 1.5;
 /** Ink of a square is only recorded this close to it (mm), so a segment cut short by its pulse cannot smear into the next square. */
 const INK_MARGIN = 4;
 
+const newParts = (): PartPlace[] => Array.from({ length: PART_COUNT }, () => 'plate');
+const newInk = (): Point2[][] => Array.from({ length: PART_COUNT }, () => []);
+
 export function initialItems(now: number): ItemsState {
   return {
     plate: 'jakaTable',
     belt: 0,
     travelMs: DEFAULT_TRAVEL_MS,
     conveyorOnAt: null,
-    parts: ['plate', 'plate'],
+    parts: newParts(),
     marker: 'holder',
-    ink: [[], []],
+    ink: newInk(),
     squaresDone: 0,
     cycleStartedAt: null,
     cycleEndedAt: null,
@@ -98,18 +103,18 @@ export function toolPoint(robot: RobotId, joints: readonly number[]): Point3 {
  * segment early), so look back from the current segment to the previous one
  * for the last segment whose grip point matches.
  */
-function grippedItem(task: TaskDef, from: number, to: number, closed: boolean): ItemId | undefined {
+function grippedItem(task: TaskDef, from: number, to: number, closed: boolean): SegmentMeta | undefined {
   const n = task.segments.length;
   for (let k = to, guard = 0; guard < n; k = (k - 1 + n) % n, guard++) {
     const seg = task.segments[k];
-    if (seg?.grip?.closed === closed && seg.meta?.item) return seg.meta.item;
+    if (seg?.grip?.closed === closed && seg.meta?.item) return seg.meta;
     if (k === from) break;
   }
   return undefined;
 }
 
-function partIndex(item: ItemId | undefined): 0 | 1 | null {
-  return item === 'part1' ? 0 : item === 'part2' ? 1 : null;
+function partIndex(meta: SegmentMeta | undefined): number | null {
+  return meta?.item === 'part' && meta.part !== undefined && meta.part < PART_COUNT ? meta.part : null;
 }
 
 export function updateItems(
@@ -124,7 +129,7 @@ export function updateItems(
   const s: ItemsState = {
     ...state,
     parts: [...state.parts],
-    ink: [state.ink[0], state.ink[1]],
+    ink: [...state.ink],
     lastAt: now,
     robots: {
       jaka: { holding: estimates.jaka.holding, segment: estimates.jaka.segment, stopped: estimates.jaka.stoppedReason !== null },
@@ -145,9 +150,9 @@ export function updateItems(
   if (rise('jakaDi3') || (firstData && on(io, 'jakaDi3'))) {
     s.plate = 'jakaTable';
     s.belt = 0;
-    s.parts = ['plate', 'plate'];
+    s.parts = newParts();
     s.marker = 'holder';
-    s.ink = [[], []];
+    s.ink = newInk();
     s.squaresDone = 0;
     s.cycleStartedAt = now;
     s.cycleEndedAt = null;
@@ -160,8 +165,9 @@ export function updateItems(
     const before = state.robots[robot];
     const after = s.robots[robot];
     if (before.stopped || after.stopped || before.holding === after.holding) continue;
-    const item = grippedItem(tasks[robot], before.segment, after.segment, after.holding);
-    const part = partIndex(item);
+    const meta = grippedItem(tasks[robot], before.segment, after.segment, after.holding);
+    const item = meta?.item;
+    const part = partIndex(meta);
     if (item === 'plate') {
       if (after.holding) s.plate = robot === 'jaka' ? 'jakaGripper' : 'staubliGripper';
       else if (robot === 'jaka') {
@@ -208,7 +214,7 @@ export function updateItems(
     const near =
       Math.abs(tool.x - slot.x) <= LAYOUT.squareHalf + INK_MARGIN && Math.abs(tool.y - slot.y) <= LAYOUT.squareHalf + INK_MARGIN;
     if (near && tool.z <= DRAW_Z + INK_TOLERANCE) {
-      const line = s.ink[square];
+      const line = s.ink[square] ?? [];
       const last = line[line.length - 1];
       if (!last || Math.hypot(tool.x - last.x, tool.y - last.y) >= INK_STEP) {
         s.ink[square] = [...line, { x: tool.x, y: tool.y }];
@@ -246,8 +252,8 @@ export function plcStep(io: PlcIoSnapshot | null): number | null {
 export const STEP_LABELS: Record<number, string> = {
   0: 'Idle',
   1: 'Plate to the Stäubli',
-  2: 'Plate on the table, parts to the board',
-  3: 'Parts done',
-  4: 'Drawing the squares',
+  2: PART_COUNT > 1 ? 'Plate on the table, parts to the board' : 'Plate on the table, part to the board',
+  3: PART_COUNT > 1 ? 'Parts done' : 'Part done',
+  4: PART_COUNT > 1 ? 'Drawing the squares' : 'Drawing the square',
   5: 'Finishing',
 };

@@ -9,10 +9,50 @@
 // Until a pulse has been seen once, its segment advances on time.
 
 import type { RobotId } from '../model/cell';
-import { JAKA_POSES as J, STAUBLI_POSES as S, STAUBLI_SQUARES } from '../model/poses';
-import type { TaskDef } from './engine';
+import { PART_COUNT } from '../model/layout';
+import { JAKA_POSES as J, STAUBLI_PART_POSES, STAUBLI_POSES as S, STAUBLI_SQUARES } from '../model/poses';
+import type { SegmentDef, TaskDef } from './engine';
 
-const [square1, square2] = STAUBLI_SQUARES;
+/** "part 1" with several parts, "the part" with one. */
+const partName = (i: number) => (PART_COUNT > 1 ? `part ${i + 1}` : 'the part');
+const squareName = (i: number) => (PART_COUNT > 1 ? `square ${i + 1}` : 'the square');
+
+/**
+ * Stäubli: pick each part from the plate and place it on the board. The last
+ * one goes home before DONE (Stäubli DO4); the others end on the optional
+ * "part placed" pulse (Stäubli DO6).
+ */
+const partSegments: SegmentDef[] = STAUBLI_PART_POSES.flatMap((p, i): SegmentDef[] => {
+  const last = i === PART_COUNT - 1;
+  return [
+    {
+      label: `Picking ${partName(i)}`,
+      path: [p.aboveHole, p.pickHole, p.aboveHole],
+      defaultMs: 1500,
+      grip: { at: 1, closed: true },
+      meta: { item: 'part', part: i },
+      endsOn: [],
+    },
+    {
+      label: `Placing ${partName(i)} on the board`,
+      path: last ? [p.aboveSlot, p.placeSlot, p.aboveSlot, S.home] : [p.aboveSlot, p.placeSlot, p.aboveSlot],
+      defaultMs: last ? 2000 : 1500,
+      grip: { at: 1, closed: false },
+      meta: { item: 'part', part: i },
+      endsOn: last ? [{ signal: 'staubliDo4', when: 'rise' }] : [{ signal: 'staubliDo6', when: 'rise', optional: true }],
+    },
+  ];
+});
+
+/** Stäubli: one square around each part, ending on the optional "square drawn" pulse (Stäubli DO7). */
+const squareSegments: SegmentDef[] = STAUBLI_SQUARES.map((path, i) => ({
+  label: `Drawing ${squareName(i)}`,
+  path,
+  defaultMs: 4000,
+  noLift: true,
+  meta: { square: i },
+  endsOn: [{ signal: 'staubliDo7', when: 'rise', optional: true }],
+}));
 
 export const TASKS: Record<RobotId, TaskDef> = {
   jaka: {
@@ -67,7 +107,7 @@ export const TASKS: Record<RobotId, TaskDef> = {
     travelAxis: { axis: 2, safe: 0 },
     segments: [
       {
-        // 0. PLC step 2 sets Stäubli DI12 once the plate has arrived.
+        // PLC step 2 sets Stäubli DI12 once the plate has arrived.
         label: 'Home, waiting for the plate',
         path: [S.home],
         defaultMs: 2000,
@@ -75,7 +115,7 @@ export const TASKS: Record<RobotId, TaskDef> = {
         endsOn: [{ signal: 'staubliDi12', when: 'high' }],
       },
       {
-        // 1. The plate leaves Sensor Stäubli when it is lifted.
+        // The plate leaves Sensor Stäubli when it is lifted.
         label: 'Picking the plate',
         path: [S.abovePickPlate, S.pickPlate, S.abovePickPlate],
         defaultMs: 1500,
@@ -84,7 +124,6 @@ export const TASKS: Record<RobotId, TaskDef> = {
         endsOn: [{ signal: 'staubliSensor', when: 'fall' }],
       },
       {
-        // 2
         label: 'Putting the plate on the table',
         path: [S.abovePlateSpot, S.placePlate, S.abovePlateSpot],
         defaultMs: 2000,
@@ -92,44 +131,10 @@ export const TASKS: Record<RobotId, TaskDef> = {
         meta: { item: 'plate' },
         endsOn: [],
       },
+      // Pick and place each part; DONE: Stäubli DO4, after going home.
+      ...partSegments,
       {
-        // 3
-        label: 'Picking part 1',
-        path: [S.aboveHole1, S.pickHole1, S.aboveHole1],
-        defaultMs: 1500,
-        grip: { at: 1, closed: true },
-        meta: { item: 'part1' },
-        endsOn: [],
-      },
-      {
-        // 4
-        label: 'Placing part 1 on the board',
-        path: [S.aboveSlot1, S.placeSlot1, S.aboveSlot1],
-        defaultMs: 1500,
-        grip: { at: 1, closed: false },
-        meta: { item: 'part1' },
-        endsOn: [{ signal: 'staubliDo6', when: 'rise', optional: true }],
-      },
-      {
-        // 5
-        label: 'Picking part 2',
-        path: [S.aboveHole2, S.pickHole2, S.aboveHole2],
-        defaultMs: 1500,
-        grip: { at: 1, closed: true },
-        meta: { item: 'part2' },
-        endsOn: [],
-      },
-      {
-        // 6. DONE: Stäubli DO4, after going home.
-        label: 'Placing part 2 on the board',
-        path: [S.aboveSlot2, S.placeSlot2, S.aboveSlot2, S.home],
-        defaultMs: 2000,
-        grip: { at: 1, closed: false },
-        meta: { item: 'part2' },
-        endsOn: [{ signal: 'staubliDo4', when: 'rise' }],
-      },
-      {
-        // 7. PLC step 4 sets Stäubli DI14.
+        // PLC step 4 sets Stäubli DI14.
         label: 'Home, waiting for the PLC',
         path: [S.home],
         defaultMs: 2000,
@@ -137,7 +142,6 @@ export const TASKS: Record<RobotId, TaskDef> = {
         endsOn: [{ signal: 'staubliDi14', when: 'high' }],
       },
       {
-        // 8
         label: 'Picking the marker',
         path: [S.aboveHolder, S.pickHolder, S.aboveHolder],
         defaultMs: 1500,
@@ -145,26 +149,9 @@ export const TASKS: Record<RobotId, TaskDef> = {
         meta: { item: 'marker' },
         endsOn: [],
       },
+      ...squareSegments,
       {
-        // 9
-        label: 'Drawing square 1',
-        path: square1,
-        defaultMs: 4000,
-        noLift: true,
-        meta: { square: 0 },
-        endsOn: [{ signal: 'staubliDo7', when: 'rise', optional: true }],
-      },
-      {
-        // 10
-        label: 'Drawing square 2',
-        path: square2,
-        defaultMs: 4000,
-        noLift: true,
-        meta: { square: 1 },
-        endsOn: [{ signal: 'staubliDo7', when: 'rise', optional: true }],
-      },
-      {
-        // 11. DONE: Stäubli DO5, after going home.
+        // DONE: Stäubli DO5, after going home.
         label: 'Storing the marker',
         path: [S.aboveHolder, S.pickHolder, S.aboveHolder, S.home],
         defaultMs: 2000,

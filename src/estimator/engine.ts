@@ -49,13 +49,15 @@ export interface SegmentDef {
   meta?: SegmentMeta;
 }
 
-export type ItemId = 'plate' | 'marker' | 'part1' | 'part2';
+export type ItemId = 'plate' | 'marker' | 'part';
 
 export interface SegmentMeta {
   /** Object gripped or released at the grip point. */
   item?: ItemId;
+  /** Index of the part when `item` is 'part'. */
+  part?: number;
   /** Index of the square drawn in this segment. */
-  square?: 0 | 1;
+  square?: number;
 }
 
 export interface TaskDef {
