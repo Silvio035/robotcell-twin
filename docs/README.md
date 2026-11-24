@@ -19,9 +19,9 @@ program and a website that mirrors the cell state live over MQTT.
 The robots and the PLC talk only through digital I/O (handshake bits). The
 full channel map is in [mqtt-contract.md](mqtt-contract.md).
 
-The application: the Jaka sends a plate carrying two parts over the
-conveyor; the Stäubli puts the plate on its table, stands the parts on a
-whiteboard and draws a square around each one with a marker
+The application: the Jaka sends a plate carrying one part (for now) over the
+conveyor; the Stäubli puts the plate on its table, stands the part on a
+whiteboard and draws a square around it with a marker
 ([whiteboard-application.md](whiteboard-application.md)).
 
 ## Components in this repository
