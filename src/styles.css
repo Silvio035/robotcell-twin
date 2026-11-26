@@ -281,10 +281,71 @@ button.secondary {
   margin: 0.4rem 0 0;
 }
 
+/* Step lamps, same colours as the HMI page */
+.steps {
+  list-style: none;
+  margin: 0 0 0.75rem;
+  padding: 0;
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  color: var(--muted);
+}
+
+.step-lamp {
+  flex: none;
+  width: 0.85rem;
+  height: 0.85rem;
+  border-radius: 3px;
+  background: var(--off);
+  border: 1px solid #0b0f14;
+}
+
+.step.is-run {
+  color: var(--text);
+}
+
+.step.is-run .step-lamp {
+  background: #f2c230;
+  box-shadow: 0 0 6px rgba(242, 194, 48, 0.7);
+}
+
+.step.is-done {
+  color: var(--text);
+}
+
+.step.is-done .step-lamp {
+  background: var(--on);
+}
+
+.cycle-progress {
+  height: 6px;
+  margin-bottom: 0.75rem;
+}
+
+.cycle-progress > span {
+  background: var(--on);
+  transition: width 0.4s ease;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
 .svg-table {
-  fill: #141d26;
-  stroke: var(--border);
-  stroke-dasharray: 4 4;
+  fill: #2a2119;
+  stroke: #4b3b2c;
 }
 
 .svg-reach {
@@ -300,7 +361,7 @@ button.secondary {
 }
 
 .svg-part {
-  fill: #e3a33b;
+  fill: #1e2226;
   stroke: #0b0f14;
   stroke-width: 1;
 }
@@ -380,12 +441,40 @@ button.secondary {
 
 
 .svg-conveyor {
-  fill: #232f3c;
-  stroke: var(--muted);
+  fill: #9aa3ad;
+  stroke: #5d6670;
+}
+
+.svg-belt-surface {
+  fill: #1d5e3f;
+}
+
+.svg-end-stop {
+  stroke: #dfe3e8;
+  stroke-width: 2;
+}
+
+.svg-sensor {
+  fill: #43c95a;
+  stroke: #1b6b2a;
+  stroke-width: 0.8;
+}
+
+.svg-beam {
+  stroke: #ff5050;
+  stroke-width: 1.5;
+  stroke-dasharray: 3 2;
+}
+
+.svg-guide {
+  fill: none;
+  stroke: #9aa1a8;
+  stroke-width: 3;
+  stroke-linejoin: miter;
 }
 
 .svg-belt {
-  stroke: var(--muted);
+  stroke: #2f7a55;
   stroke-width: 3;
   stroke-dasharray: 10 8;
 }
@@ -579,18 +668,18 @@ button.secondary {
 }
 
 .svg-part-body {
-  fill: none;
-  stroke: #0b0f14;
-  stroke-width: 0.6;
-  stroke-dasharray: 1.5 1.5;
+  fill: #8f969d;
 }
 
 .svg-plate {
-  fill: #7a8794;
+  fill: #9aa1a8;
   stroke: #0b0f14;
   stroke-width: 0.8;
 }
 
 .svg-plate-hole {
-  fill: #2b3036;
+  fill: #1d5e3f;
+  fill-opacity: 0.35;
+  stroke: #0b0f14;
+  stroke-width: 0.6;
 }
