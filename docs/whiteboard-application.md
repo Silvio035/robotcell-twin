@@ -6,17 +6,19 @@ PC). The robot programs still have to be written following the table below.
 
 ## The application
 
-On the Jaka side: a plate with 3 holes; one part stands in hole 1, the
-middle hole stays free for the grippers.
+On the Jaka side: a grey plate with 3 square holes in a triangle (two at
+the far edge, one in the middle of the near edge), located on the table by
+four L-shaped corner guides. The part, a square block, stands on the plate
+between the two far holes. On the Stäubli table: a stand for the plate, a
+whiteboard and the marker in its holder.
 
 > **One part for now.** The application starts with a single part (one
 > square). The part count is one constant in each place: `NUM_PECAS` in
-> `NewProgram.var` and `PART_COUNT` (from `LAYOUT.plate.partHoles` /
+> `NewProgram.var` and `PART_COUNT` (from `LAYOUT.plate.partSpots` /
 > `LAYOUT.boardSlots`) in `src/model/layout.ts`. Going back to two parts
-> means raising both, adding a hole and a board slot in the layout, the
-> second part and square on the HMI page and the second pulses in
-> `src/sim/timeline.json`. On the Stäubli table: a stand for the plate, a
-whiteboard and the marker in its holder.
+> means raising both, adding a plate spot and a board slot in the layout,
+> the second part and square on the HMI page and the second pulses in
+> `src/sim/timeline.json`.
 
 1. The Jaka picks the plate and puts it on the Jaka → Stäubli conveyor.
 2. The conveyor brings the plate to the Stäubli (the only use of the conveyor).
@@ -25,9 +27,13 @@ whiteboard and the marker in its holder.
 4. The Stäubli picks the marker, draws a square around the part and puts
    the marker back in its holder.
 
-The parts are "big-head" parts: a body that fits the plate hole and a
-slightly wider head that rests on the plate. They stay upright the whole
-time (the Stäubli gripper is vertical) and are gripped by the head.
+The part stays upright the whole time (the Stäubli gripper is vertical)
+and is gripped by two sides.
+
+Times measured on the cell: the Jaka takes about 14 s from the command
+(`DI3`) to the plate released on the conveyor, and the conveyor about 7 s
+to bring the plate to the Stäubli sensor. The twin's defaults and the demo
+run use these values.
 
 For the next run the operator puts the plate with the part back at the
 Jaka, takes the part off the board and wipes it, then presses **Ligar**.
@@ -97,8 +103,8 @@ Practical points:
 - **Plate stand.** The stand on the Stäubli table must be high enough for
   the J3 stroke (the twin uses 30 mm) and should locate the plate (pins or a
   pocket), so the parts are always in the same place for the pick.
-- **Parts.** Hole diameter a little larger than the body, so the parts drop
-  in and come out without jamming; the head keeps them at a fixed height.
+- **Parts.** The part stands on the plate, so its pick height is the plate
+  top plus the grip height (`LAYOUT.part.gripZ`).
 - **Drawing.** A SCARA is a good fit: straight lines at a fixed height. A
   spring-loaded marker holder on the gripper keeps the pressure even if the
   board is not perfectly flat.

@@ -11,7 +11,7 @@
 // Then set POSES_ARE_PLACEHOLDERS to false.
 
 import { jakaIkDown, SCARA, scaraIk } from './kinematics';
-import { LAYOUT, PART_HEIGHT, plateHole, toRobotFrame, type Point2, type Point3 } from './layout';
+import { LAYOUT, onPlate, toRobotFrame, type Point2, type Point3 } from './layout';
 
 export type Pose = readonly number[];
 
@@ -27,8 +27,8 @@ const jaka = (p: Point3) => jakaIkDown(toRobotFrame('jaka', p));
 
 /** Gripper tip height with the fingers inside the plate's grip hole, plate lying on `surface`. */
 const plateGrip = (surface: number) => surface + plate.thickness / 2;
-/** Gripper tip height that grips a part by the middle of its head; the part stands on `surface`. */
-const partGrip = (surface: number) => surface + PART_HEIGHT - part.headHeight / 2;
+/** Gripper tip height that grips a part by its sides; the part stands on `surface`. */
+const partGrip = (surface: number) => surface + part.gripZ;
 /** Gripper tip height that grips the upright marker standing on `surface`. */
 const markerGrip = (surface: number) => surface + marker.standOffset + marker.tipReach;
 /** Gripper tip height while the marker tip touches the board. */
@@ -61,22 +61,22 @@ export const STAUBLI_POSES = {
 } satisfies Record<string, Pose>;
 
 export interface PartPoses {
-  aboveHole: Pose;
-  pickHole: Pose;
+  aboveOnPlate: Pose;
+  pickOnPlate: Pose;
   aboveSlot: Pose;
   placeSlot: Pose;
 }
 
 /**
- * Stäubli poses for each part: pick it from its plate hole (a part in the
- * plate stands on the plate's bottom surface) and place it on its board slot.
+ * Stäubli poses for each part: pick it where it stands on the plate (on the
+ * plate's top surface) and place it on its board slot.
  */
-export const STAUBLI_PART_POSES: readonly PartPoses[] = plate.partHoles.map((h, i) => {
-  const hole = plateHole(spot, h);
+export const STAUBLI_PART_POSES: readonly PartPoses[] = plate.partSpots.map((offset, i) => {
+  const onTop = onPlate(spot, offset);
   const slot = LAYOUT.boardSlots[i]!;
   return {
-    aboveHole: staubli(at(hole, top)),
-    pickHole: staubli(at(hole, partGrip(spot.z))),
+    aboveOnPlate: staubli(at(onTop, top)),
+    pickOnPlate: staubli(at(onTop, partGrip(spot.z + plate.thickness))),
     aboveSlot: staubli(at(slot, top)),
     placeSlot: staubli(at(slot, partGrip(board.z))),
   };

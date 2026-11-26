@@ -27,7 +27,7 @@ const partSegments: SegmentDef[] = STAUBLI_PART_POSES.flatMap((p, i): SegmentDef
   return [
     {
       label: `Picking ${partName(i)}`,
-      path: [p.aboveHole, p.pickHole, p.aboveHole],
+      path: [p.aboveOnPlate, p.pickOnPlate, p.aboveOnPlate],
       defaultMs: 1500,
       grip: { at: 1, closed: true },
       meta: { item: 'part', part: i },
@@ -70,8 +70,10 @@ export const TASKS: Record<RobotId, TaskDef> = {
       },
       {
         label: 'Picking the plate',
+        // Measured on the cell: about 14 s from Jaka DI3 to the plate released
+        // on the conveyor (Jaka DO7), split over the three segments below.
         path: [J.abovePlate, J.pickPlate, J.abovePlate],
-        defaultMs: 2500,
+        defaultMs: 6000,
         grip: { at: 1, closed: true },
         meta: { item: 'plate' },
         endsOn: [{ signal: 'jakaDo5', when: 'rise', optional: true }],
@@ -79,14 +81,14 @@ export const TASKS: Record<RobotId, TaskDef> = {
       {
         label: 'Putting the plate on the conveyor',
         path: [J.aboveConveyor, J.placeConveyor],
-        defaultMs: 2000,
+        defaultMs: 6500,
         endsOn: [{ signal: 'jakaSensor', when: 'rise' }],
       },
       {
         // DONE: Jaka DO7. The PLC then clears DI3 and starts the conveyor.
         label: 'Releasing the plate',
-        path: [J.placeConveyor],
-        defaultMs: 500,
+        path: [J.placeConveyor, J.aboveConveyor],
+        defaultMs: 1500,
         grip: { at: 0, closed: false },
         meta: { item: 'plate' },
         endsOn: [{ signal: 'jakaDo7', when: 'rise' }],

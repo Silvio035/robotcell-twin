@@ -16,7 +16,7 @@ const Z_AXIS = new Vector3(0, 0, 1);
 
 const COLORS = {
   staubliBody: '#9aa3ab',
-  staubliArm: '#f2a22e',
+  staubliArm: '#f5b324',
   jakaBody: '#f4f5f7',
   jakaJoint: '#c9ced6',
   gripper: '#4a525b',
@@ -51,14 +51,14 @@ function useFingers(robot: 'jaka' | 'staubli') {
     const items = useTwinStore.getState().items;
     const holdsPlate = items?.plate === (robot === 'jaka' ? 'jakaGripper' : 'staubliGripper');
     const holdsMarker = robot === 'staubli' && items?.marker === 'gripper';
-    // Plate: internal grip, fingers open inside its middle hole.
+    // Plate: internal grip, fingers open inside its grip hole.
     const gap = !holding
       ? 60
       : holdsPlate
-        ? LAYOUT.part.bodyDiameter
+        ? LAYOUT.plate.holeSize - 4
         : holdsMarker
           ? LAYOUT.marker.diameter
-          : LAYOUT.part.headDiameter;
+          : LAYOUT.part.size;
     ref.current?.children.forEach((child) => {
       const side = (child.userData as { side?: number }).side ?? 1;
       child.position.x = side * (gap / 2 + 4);

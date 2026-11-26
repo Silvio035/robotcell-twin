@@ -13,7 +13,7 @@ program and a website that mirrors the cell state live over MQTT.
 | I/O | X20BR9300 bus controller, X20DI9371 (12 DI), X20DO9322 (12 DO), X20AI4622, X20AO4622 |
 | Robot 1 | Stäubli TS60, 4-axis SCARA, programmed in VAL3 on the lab PCs, program loaded by USB drive |
 | Robot 2 | Jaka Minicobo, 6-axis cobot with an SMC MHZ2-20D pneumatic gripper, programmed from a PC or the cell tablet |
-| Conveyors | Stäubli → Jaka (DO11) and Jaka → Stäubli (DO12) |
+| Conveyors | Jaka → Stäubli (DO12), the one belt on the cell. Output DO11 (Stäubli → Jaka) is wired but no belt uses it |
 | Sensors | One part sensor at each robot (DI9, DI10), E-stop (DI12) |
 
 The robots and the PLC talk only through digital I/O (handshake bits). The
