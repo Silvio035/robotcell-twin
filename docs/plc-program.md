@@ -51,7 +51,7 @@ application ([whiteboard-application.md](whiteboard-application.md)).
 | `Jaka_DO7` | DI9371 ch 1 | DONE: plate on the conveyor |
 | `Jaka_DO6` | DI9371 ch 2 | Spare |
 | `Jaka_DO5` | DI9371 ch 3 | Pulse: plate gripped (used by the twin only) |
-| `Staubli_DO4` | DI9371 ch 5 | DONE: plate on the stand, part on the board |
+| `Staubli_DO4` | DI9371 ch 5 | DONE: plate on the table, part on the board |
 | `Staubli_DO5` | DI9371 ch 6 | DONE: square drawn, marker stored |
 | `Staubli_DO6` | DI9371 ch 7 | Pulse: one part placed |
 | `Staubli_DO7` | DI9371 ch 8 | Pulse: one square drawn |
@@ -61,7 +61,7 @@ application ([whiteboard-application.md](whiteboard-application.md)).
 | `Jaka_DI3` | DO9322 ch 1 | CMD: put the plate on the conveyor |
 | `Jaka_DI2` | DO9322 ch 2 | Enable, TRUE while a cycle runs |
 | `Jaka_DI1` | DO9322 ch 3 | Spare |
-| `Staubli_DI12` | DO9322 ch 5 | CMD: plate to the stand, part to the board |
+| `Staubli_DI12` | DO9322 ch 5 | CMD: plate to the table, part to the board |
 | `Staubli_DI13` | DO9322 ch 6 | Enable, TRUE while a cycle runs |
 | `Staubli_DI14` | DO9322 ch 7 | CMD: pick the marker, draw, put it back |
 | `Staubli_DI15` | DO9322 ch 8 | Spare |

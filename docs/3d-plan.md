@@ -21,8 +21,9 @@ What is in it:
   fresh.
 - Two tables with the conveyor crossing the gap, green belt on an
   aluminium frame (texture moves while the output is on), end stops, a
-  green sensor pair at each end (indicator and beam when on), whiteboard,
-  plate stand, L-shaped plate guides, marker holder. Shapes and colours
+  green sensor pair at each end (indicator and beam when on), whiteboard in
+  front of the Stäubli, L-shaped plate guides, marker holder (the plate lies
+  on the Stäubli table, no stand). Shapes and colours
   follow photos of the cell; sizes stay placeholders.
 - Grey plate with 3 square holes, square part standing on it or on the
   board, marker, ink of the squares, gripper fingers sized to the held object.
@@ -149,7 +150,7 @@ the squares drawn on the board as the Stäubli moves.
 | Belt sensors, emitter glows when on | `Sensor Jaka`, `Sensor Stäubli` |
 | Robots | Joint values (live or estimated) |
 | Part in a gripper, attached to the tool frame | `RobotEstimate.holding` |
-| Plate at the Jaka, on the conveyor, in a gripper or on the stand | `ItemsEstimate.plate`, `.belt` |
+| Plate at the Jaka, on the conveyor, in a gripper or on the Stäubli table | `ItemsEstimate.plate`, `.belt` |
 | Parts in the plate, in the Stäubli gripper or on the board | `ItemsEstimate.parts` |
 | Marker in its holder or in the Stäubli gripper | `ItemsEstimate.marker` |
 | Ink of the squares on the board | `ItemsEstimate.ink` |

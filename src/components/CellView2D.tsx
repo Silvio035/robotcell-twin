@@ -154,6 +154,8 @@ function Robot({ robot, now, gaugeX }: { robot: RobotId; now: number; gaugeX: nu
   const geo = joints ? armGeometry(robot, joints) : null;
   const reach = robot === 'staubli' ? SCARA.l1 + SCARA.l2 : JAKA_REACH;
   const barWidth = 120;
+  // Label block below the base, except the Staubli: the whiteboard is in front of it, so its labels go above.
+  const ly = robot === 'staubli' ? base.y - 100 : base.y;
 
   return (
     <g>
@@ -179,18 +181,18 @@ function Robot({ robot, now, gaugeX }: { robot: RobotId; now: number; gaugeX: nu
         </g>
       )}
       {/* Labels last, outlined, so they stay readable when the arm crosses them. */}
-      <text x={base.x} y={base.y + 44} textAnchor="middle" className="svg-title svg-halo">
+      <text x={base.x} y={ly + 44} textAnchor="middle" className="svg-title svg-halo">
         {NAMES[robot]}
       </text>
       {estimate && (
         <g>
-          <text x={base.x} y={base.y + 60} textAnchor="middle" className="svg-phase svg-halo">
+          <text x={base.x} y={ly + 60} textAnchor="middle" className="svg-phase svg-halo">
             {estimate.phase}
           </text>
-          <rect x={base.x - barWidth / 2} y={base.y + 67} width={barWidth} height={4} rx={2} className="svg-progress-track" />
+          <rect x={base.x - barWidth / 2} y={ly + 67} width={barWidth} height={4} rx={2} className="svg-progress-track" />
           <rect
             x={base.x - barWidth / 2}
-            y={base.y + 67}
+            y={ly + 67}
             width={barWidth * estimate.progress}
             height={4}
             rx={2}
@@ -240,7 +242,7 @@ function Fixtures() {
   return (
     <g>
       <rect x={b.x} y={b.y} width={board.width * K} height={board.depth * K} rx={2} className="svg-board" />
-      <text x={b.x + (board.width * K) / 2} y={b.y - 5} textAnchor="middle" className="svg-small">
+      <text x={b.x + 4} y={b.y + 11} className="svg-small">
         Whiteboard
       </text>
       {boardSlots.map((slot, i) => {
@@ -249,7 +251,7 @@ function Fixtures() {
       })}
       <PlateGuides />
       {area(onPlate(jakaPlateStart, plate.centre), plate.length + 30, plate.width + 30, 'Plate (start)')}
-      {area(onPlate(staubliPlateSpot, plate.centre), plate.length + 10, plate.width + 10, 'Plate stand')}
+      {area(onPlate(staubliPlateSpot, plate.centre), plate.length + 10, plate.width + 10, 'Plate drop')}
       {area(staubliMarkerHolder, 50, 50, 'Marker holder')}
     </g>
   );

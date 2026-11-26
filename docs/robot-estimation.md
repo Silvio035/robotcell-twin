@@ -53,7 +53,7 @@ cycle runs. When it drops (cycle finished or stop) the robots show **Idle**.
 | Plate: Jaka table → Jaka gripper | Jaka gripper closes in "Picking the plate" |
 | Plate: → conveyor | Jaka gripper opens on the conveyor (`Sensor Jaka` already sees it) |
 | Plate: along the conveyor | Conveyor output on; speed learned from "conveyor on" → `Sensor Stäubli` |
-| Plate: → Stäubli gripper → stand | Stäubli gripper closes at the conveyor end / opens on the stand |
+| Plate: → Stäubli gripper → table | Stäubli gripper closes at the conveyor end / opens on the Stäubli table |
 | Part n: plate → gripper → board | Stäubli gripper closes at hole n / opens at board slot n. Parts still in the plate move with it |
 | Marker: holder → gripper → holder | Stäubli gripper closes / opens at the marker holder |
 | Ink of square n | Recorded while the Stäubli holds the marker in "Drawing square n", its tool is at drawing height and inside square n |
@@ -80,7 +80,7 @@ the real cell.
 |---|---|---|
 | Home, waiting for the plate | home | `Stäubli DI12` high (PLC step 2) |
 | Picking the plate | above / pick at the conveyor end | `Sensor Stäubli` falls |
-| Putting the plate on the table | above / place on the stand | time |
+| Putting the plate on the table | above / place on the table | time |
 | Picking the part | above / pick at hole 1 | time |
 | Placing the part on the board | above / place at the board slot → home | `Stäubli DO4` rises |
 | Home, waiting for the PLC | home | `Stäubli DI14` high (PLC step 4) |
@@ -137,11 +137,11 @@ show, is on the Z gauge next to each robot.
 
 The placeholder poses are computed from the layout with inverse kinematics,
 so the tools land on the conveyor, part source, board slots, square
-corners, plate stand and marker holder. With real
+corners, plate drop spot and marker holder. With real
 values the order is:
 
 1. Measure the layout (robot bases, conveyor ends, board,
-   plate start and stand, marker holder, heights) and update `src/model/layout.ts`.
+   plate start and drop spot, marker holder, heights) and update `src/model/layout.ts`.
 2. Confirm the robot models and update the link lengths in
    `src/model/kinematics.ts` (Stäubli L1/L2/stroke, Jaka DH).
 3. Copy the real poses into `src/model/poses.ts` as plain numbers.

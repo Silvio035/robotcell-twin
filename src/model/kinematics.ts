@@ -19,7 +19,8 @@ export const SCARA = {
   l1: 320,
   l2: 300,
   /** Gripper tip height above the table with J3 fully up (robot on its stand). */
-  zTop: 220,
+  // Low enough that the full stroke reaches a plate lying on the table.
+  zTop: 200,
   stroke: 200,
   /** Elbow side used by the IK: +1 = J2 positive. */
   elbow: 1 as 1 | -1,
