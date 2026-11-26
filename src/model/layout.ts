@@ -38,7 +38,8 @@ export const LAYOUT = {
   /** Area drawn in the 2D view. */
   bounds: { minX: -650, maxX: 2050, minY: -650, maxY: 650 },
   robots: {
-    staubli: { x: 0, y: 0, yaw: 0 },
+    // Behind the whiteboard, facing the conveyor (robot +x points to cell -y).
+    staubli: { x: 300, y: 380, yaw: -90 },
     jaka: { x: 1500, y: 0, yaw: 0 },
   } satisfies Record<RobotId, RobotMount>,
   /**
@@ -87,21 +88,27 @@ export const LAYOUT = {
   plateGuide: { leg: 35, width: 12 },
   /** Marker standing tip down in its holder; tipReach = tip below the gripper tip. */
   marker: { length: 130, diameter: 18, tipReach: 60, standOffset: 5 },
-  /** Whiteboard on the Stäubli table (centre, size, top surface height). */
-  board: { x: -200, y: 300, width: 300, depth: 200, z: 5 },
+  /**
+   * Whiteboard on the Stäubli table, in front of the Stäubli, between it and
+   * the conveyor's last stretch (centre, size, top surface height).
+   */
+  board: { x: 250, y: 60, width: 300, depth: 200, z: 5 },
   /** Part centres on the board, one per part; a square is drawn around each one. */
-  boardSlots: [{ x: -200, y: 300 }],
+  boardSlots: [{ x: 250, y: 60 }],
   /** Half side of the drawn squares. */
   squareHalf: 45,
-  /** Plate centre at the start (Jaka table) and on the Stäubli stand (z = stand top). */
+  /**
+   * Plate grip hole at the start (Jaka table) and where the Stäubli leaves
+   * it, lying on its table beside the board (no stand).
+   */
   jakaPlateStart: { x: 1500, y: -380, z: 0 },
-  staubliPlateSpot: { x: 280, y: 330, z: 30 },
+  staubliPlateSpot: { x: 560, y: 230, z: 0 },
   /** Marker holder on the Stäubli table (start and end of every run). */
-  staubliMarkerHolder: { x: 150, y: -380, z: 40 },
+  staubliMarkerHolder: { x: 60, y: 270, z: 40 },
   /** Approach height above pick and place points. */
   approach: 80,
   /** Tool positions at home. */
-  staubliHome: { x: 350, y: 100 },
+  staubliHome: { x: 300, y: 160 },
   jakaHome: { x: 1300, y: 200, z: 300 },
 };
 

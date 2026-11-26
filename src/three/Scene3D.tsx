@@ -209,7 +209,6 @@ function PlateGuides() {
 
 export function StaticCell() {
   const belt = LAYOUT.conveyors.jakaToStaubli;
-  const stand = onPlate(LAYOUT.staubliPlateSpot, plate.centre);
   const holder = LAYOUT.staubliMarkerHolder;
   return (
     <group>
@@ -233,11 +232,7 @@ export function StaticCell() {
         <meshStandardMaterial color="#f7f8f9" roughness={0.3} />
       </mesh>
       <PlateGuides />
-      {/* Plate stand on the Stäubli table and the marker holder. */}
-      <mesh position={[stand.x, stand.y, LAYOUT.staubliPlateSpot.z / 2]}>
-        <boxGeometry args={[plate.length + 10, plate.width + 10, LAYOUT.staubliPlateSpot.z]} />
-        <meshStandardMaterial color="#3a4552" />
-      </mesh>
+      {/* Marker holder (the plate lies on the Stäubli table, no stand). */}
       <mesh position={[holder.x, holder.y, holder.z / 2]}>
         <boxGeometry args={[45, 45, holder.z]} />
         <meshStandardMaterial color={COLORS.holder} />
