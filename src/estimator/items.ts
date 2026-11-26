@@ -55,7 +55,8 @@ export interface ItemsEstimate {
   cycleEndedAt: number | null;
 }
 
-const DEFAULT_TRAVEL_MS = 3500;
+/** Conveyor travel from Sensor Jaka to Sensor Stäubli, measured on the cell (about 7 s); refined from each run. */
+const DEFAULT_TRAVEL_MS = 7000;
 const LEARN_RATE = 0.5;
 /** Without a sensor confirmation the plate stops just before the Stäubli end. */
 const MAX_UNCONFIRMED = 0.95;
