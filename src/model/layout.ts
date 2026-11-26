@@ -41,24 +41,50 @@ export const LAYOUT = {
     staubli: { x: 0, y: 0, yaw: 0 },
     jaka: { x: 1500, y: 0, yaw: 0 },
   } satisfies Record<RobotId, RobotMount>,
+  /**
+   * Two tables side by side (Stäubli and Jaka) with a gap between them; the
+   * conveyor crosses the gap, as on the cell.
+   */
+  tables: [
+    { minX: -650, maxX: 820, minY: -650, maxY: 650 },
+    { minX: 880, maxX: 2050, minY: -650, maxY: 650 },
+  ],
+  /**
+   * The cell's one conveyor, green belt on an aluminium frame, with an end
+   * stop bar and a sensor pair (green boxes on both sides) at each end.
+   * Output `Esteira_StaubliJaka` is wired but has no belt.
+   */
   conveyors: {
-    jakaToStaubli: { from: { x: 1150, y: -150 }, to: { x: 450, y: -150 }, width: 100, height: 100 },
-    staubliToJaka: { from: { x: 450, y: 150 }, to: { x: 1150, y: 150 }, width: 100, height: 100 },
+    jakaToStaubli: { from: { x: 1150, y: -150 }, to: { x: 450, y: -150 }, width: 120, height: 100 },
   } satisfies Record<string, ConveyorLayout>,
   /**
-   * "Big-head" part: a body that fits a plate hole and a slightly wider head
-   * that rests on the plate. It always stands upright (the SCARA gripper is
-   * vertical) and is gripped by the head.
+   * Square block (dark body, grey cap) standing upright on the plate. The
+   * Stäubli grips it by two sides at `gripZ` above its bottom.
    */
-  part: { headDiameter: 30, headHeight: 12, bodyDiameter: 24, bodyHeight: 20 },
+  part: { size: 25, height: 25, capHeight: 5, gripZ: 15 },
   /**
-   * Plate with 3 holes in a row (along x) that carries the parts from the
-   * Jaka to the Stäubli. partHoles: hole of each part, in the order the
-   * Stäubli moves them (one part for now, see PART_COUNT). gripHole: the
-   * free hole where both grippers take the plate, fingers opening inside it
-   * (internal grip), which suits the short stroke of the Jaka gripper.
+   * Grey plate with 3 square holes in a triangle: two at the far edge and
+   * one in the middle of the near edge. Every plate position in this file is
+   * the centre of that near hole (the grip hole), where both grippers take
+   * the plate with the fingers opening inside it. Offsets below are from it:
+   * `centre` of the plate outline, `holes`, and `partSpots`, where each part
+   * stands on the plate (one for now, between the far holes; see PART_COUNT).
    */
-  plate: { length: 150, width: 60, thickness: 20, holePitch: 45, partHoles: [0], gripHole: 1 },
+  plate: {
+    length: 150,
+    width: 100,
+    thickness: 8,
+    holeSize: 25,
+    centre: { x: 0, y: 22 },
+    holes: [
+      { x: -45, y: 44 },
+      { x: 45, y: 44 },
+      { x: 0, y: 0 },
+    ],
+    partSpots: [{ x: 0, y: 44 }],
+  },
+  /** L-shaped corner guides that locate the plate at its start on the Jaka table. */
+  plateGuide: { leg: 35, width: 12 },
   /** Marker standing tip down in its holder; tipReach = tip below the gripper tip. */
   marker: { length: 130, diameter: 18, tipReach: 60, standOffset: 5 },
   /** Whiteboard on the Stäubli table (centre, size, top surface height). */
@@ -97,18 +123,15 @@ export function toRobotFrame(robot: RobotId, p: Point3): Point3 {
   return { x: c * dx + s * dy, y: -s * dx + c * dy, z: p.z };
 }
 
-/** Centre of hole `hole` (0..2) of a plate whose centre is at `centre`. */
-export function plateHole(centre: Point2, hole: number): Point2 {
-  return { x: centre.x + (hole - 1) * LAYOUT.plate.holePitch, y: centre.y };
+/** A point given as an offset in LAYOUT.plate, for a plate whose grip hole is at `ref`. */
+export function onPlate(ref: Point2, offset: Point2): Point2 {
+  return { x: ref.x + offset.x, y: ref.y + offset.y };
 }
 
 /**
  * Parts per run: one part on the plate, placed on the board, one square
  * around it. Matches NUM_PECAS in NewProgram.var. To go back to more parts,
- * add a hole to plate.partHoles and a slot to boardSlots for each one.
+ * add a spot to plate.partSpots and a slot to boardSlots for each one.
  */
 export const PART_COUNT = LAYOUT.boardSlots.length;
-if (LAYOUT.plate.partHoles.length !== PART_COUNT) throw new Error('LAYOUT: one plate hole per board slot');
-
-/** Total height of a standing part. */
-export const PART_HEIGHT = LAYOUT.part.bodyHeight + LAYOUT.part.headHeight;
+if (LAYOUT.plate.partSpots.length !== PART_COUNT) throw new Error('LAYOUT: one plate spot per board slot');

@@ -8,7 +8,7 @@
 import { useRobotView } from '../hooks/useRobotView';
 import { pointsOfRobot, type RobotId, type SignalId } from '../model/cell';
 import { jakaFk, SCARA, scaraFk } from '../model/kinematics';
-import { LAYOUT, plateHole, toCellFrame, type ConveyorLayout, type Point2, type Point3 } from '../model/layout';
+import { LAYOUT, onPlate, toCellFrame, type ConveyorLayout, type Point2, type Point3 } from '../model/layout';
 import { isEmergencyActive, signalValue, type PlcIoSnapshot } from '../model/messages';
 import { useTwinStore } from '../state/store';
 
@@ -33,9 +33,10 @@ const Z_RANGE: Record<RobotId, { min: number; max: number }> = {
 const NAMES: Record<RobotId, string> = { staubli: 'Stäubli', jaka: 'Jaka' };
 
 const CONVEYORS: { id: SignalId; layout: ConveyorLayout; label: string }[] = [
-  { id: 'conveyorStaubliToJaka', layout: LAYOUT.conveyors.staubliToJaka, label: 'Conveyor Stäubli → Jaka' },
   { id: 'conveyorJakaToStaubli', layout: LAYOUT.conveyors.jakaToStaubli, label: 'Conveyor Jaka → Stäubli' },
 ];
+/** The belt runs past both plate positions (same as the 3D view). */
+const BELT_OVERRUN = 110;
 
 function ledClass(value: boolean | null): string {
   return value === null ? 'svg-led-unknown' : value ? 'svg-led-on' : 'svg-led-off';
@@ -54,27 +55,55 @@ function Led({ x, y, value, label }: { x: number; y: number; value: boolean | nu
   );
 }
 
-/** A standing part seen from above: the head with the body outline inside. */
+/** A square part seen from above: dark body with its grey cap. */
 function Part({ at }: { at: Point2 }) {
   const p = sp(at);
+  const s = LAYOUT.part.size * K;
   return (
     <g>
-      <circle cx={p.x} cy={p.y} r={(LAYOUT.part.headDiameter / 2) * K} className="svg-part" />
-      <circle cx={p.x} cy={p.y} r={(LAYOUT.part.bodyDiameter / 2) * K} className="svg-part-body" />
+      <rect x={p.x - s / 2} y={p.y - s / 2} width={s} height={s} rx={1} className="svg-part" />
+      <rect x={p.x - s / 2 + 1.2} y={p.y - s / 2 + 1.2} width={s - 2.4} height={s - 2.4} className="svg-part-body" />
     </g>
   );
 }
 
-/** The plate seen from above, with its 3 holes. */
+/** The plate seen from above, with its 3 square holes. `at` is its grip hole. */
 function Plate({ at }: { at: Point2 }) {
-  const { length, width } = LAYOUT.plate;
-  const p = sp(at);
+  const { length, width, centre, holes, holeSize } = LAYOUT.plate;
+  const p = sp(onPlate(at, centre));
+  const h = holeSize * K;
   return (
     <g>
-      <rect x={p.x - (length * K) / 2} y={p.y - (width * K) / 2} width={length * K} height={width * K} rx={3} className="svg-plate" />
-      {[0, 1, 2].map((h) => {
-        const c = sp(plateHole(at, h));
-        return <circle key={h} cx={c.x} cy={c.y} r={(LAYOUT.part.bodyDiameter / 2 + 1) * K} className="svg-plate-hole" />;
+      <rect x={p.x - (length * K) / 2} y={p.y - (width * K) / 2} width={length * K} height={width * K} rx={2} className="svg-plate" />
+      {holes.map((offset, i) => {
+        const c = sp(onPlate(at, offset));
+        return <rect key={i} x={c.x - h / 2} y={c.y - h / 2} width={h} height={h} className="svg-plate-hole" />;
+      })}
+    </g>
+  );
+}
+
+/** L-shaped corner guides around the plate outline at its start on the Jaka table. */
+function PlateGuides() {
+  const { length, width, centre } = LAYOUT.plate;
+  const c = sp(onPlate(LAYOUT.jakaPlateStart, centre));
+  const hx = (length / 2 + 8) * K;
+  const hy = (width / 2 + 8) * K;
+  const leg = LAYOUT.plateGuide.leg * K;
+  const corners: [number, number][] = [
+    [-1, -1],
+    [1, -1],
+    [-1, 1],
+    [1, 1],
+  ];
+  return (
+    <g>
+      {corners.map(([dx, dy]) => {
+        const x = c.x + dx * hx;
+        const y = c.y + dy * hy;
+        return (
+          <polyline key={`${dx}${dy}`} points={`${x - dx * leg},${y} ${x},${y} ${x},${y - dy * leg}`} className="svg-guide" />
+        );
       })}
     </g>
   );
@@ -218,8 +247,9 @@ function Fixtures() {
         const c = sp({ x: slot.x - squareHalf, y: slot.y + squareHalf });
         return <rect key={i} x={c.x} y={c.y} width={2 * squareHalf * K} height={2 * squareHalf * K} className="svg-square-guide" />;
       })}
-      {area(jakaPlateStart, plate.length + 20, plate.width + 20, 'Plate (start)')}
-      {area(staubliPlateSpot, plate.length + 20, plate.width + 20, 'Plate spot')}
+      <PlateGuides />
+      {area(onPlate(jakaPlateStart, plate.centre), plate.length + 30, plate.width + 30, 'Plate (start)')}
+      {area(onPlate(staubliPlateSpot, plate.centre), plate.length + 10, plate.width + 10, 'Plate stand')}
       {area(staubliMarkerHolder, 50, 50, 'Marker holder')}
     </g>
   );
@@ -259,7 +289,7 @@ function Items({ now }: { now: number }) {
       )}
       {plateAt && <Plate at={plateAt} />}
       {items.parts.map((place, i) => {
-        if (place === 'plate') return plateAt ? <Part key={i} at={plateHole(plateAt, LAYOUT.plate.partHoles[i]!)} /> : null;
+        if (place === 'plate') return plateAt ? <Part key={i} at={onPlate(plateAt, LAYOUT.plate.partSpots[i]!)} /> : null;
         if (place === 'board') return <Part key={i} at={LAYOUT.boardSlots[i]!} />;
         return staubliTool ? <Part key={i} at={staubliTool} /> : null;
       })}
@@ -274,25 +304,35 @@ export function CellView2D({ io, stale, now }: { io: PlcIoSnapshot | null; stale
   return (
     <svg viewBox={`0 0 ${VIEW.w} ${VIEW.h}`} className="cell-view" role="img" aria-label="Robot cell, top view to scale">
       <rect x={1} y={1} width={VIEW.w - 2} height={VIEW.h - 2} rx={12} className={`svg-frame ${emergency ? 'is-emergency' : ''}`} />
-      <rect x={PANEL} y={MARGIN} width={VIEW.w - 2 * PANEL} height={VIEW.h - 2 * MARGIN} rx={8} className="svg-table" />
+      {LAYOUT.tables.map((t, i) => (
+        <rect
+          key={i}
+          x={sx(t.minX)}
+          y={sy(t.maxY)}
+          width={(t.maxX - t.minX) * K}
+          height={(t.maxY - t.minY) * K}
+          rx={6}
+          className="svg-table"
+        />
+      ))}
 
       {CONVEYORS.map((c) => {
         const running = signalValue(data, c.id) === true;
         const a = sp(c.layout.from);
         const b = sp(c.layout.to);
         const half = (c.layout.width * K) / 2;
+        const rail = 20 * K;
+        const x0 = Math.min(a.x, b.x) - BELT_OVERRUN * K;
+        const len = Math.abs(b.x - a.x) + 2 * BELT_OVERRUN * K;
         return (
           <g key={c.id}>
-            <rect
-              x={Math.min(a.x, b.x)}
-              y={a.y - half}
-              width={Math.abs(b.x - a.x)}
-              height={half * 2}
-              rx={4}
-              className="svg-conveyor"
-            />
-            <line x1={a.x} y1={a.y} x2={b.x} y2={b.y} className={`svg-belt ${running ? 'run-forward' : ''}`} />
-            <text x={(a.x + b.x) / 2} y={a.y - half - 5} textAnchor="middle" className="svg-small">
+            <rect x={x0} y={a.y - half - rail} width={len} height={2 * (half + rail)} rx={3} className="svg-conveyor" />
+            <rect x={x0} y={a.y - half} width={len} height={half * 2} className="svg-belt-surface" />
+            {[x0 + 4, x0 + len - 4].map((x) => (
+              <line key={x} x1={x} y1={a.y - half - 2} x2={x} y2={a.y + half + 2} className="svg-end-stop" />
+            ))}
+            <line x1={x0 + 8} y1={a.y} x2={x0 + len - 8} y2={a.y} className={`svg-belt ${running ? 'run-backward' : ''}`} />
+            <text x={(a.x + b.x) / 2} y={a.y + half + rail + 13} textAnchor="middle" className="svg-small">
               {c.label} {running ? '(running)' : ''}
             </text>
           </g>
@@ -300,12 +340,22 @@ export function CellView2D({ io, stale, now }: { io: PlcIoSnapshot | null; stale
       })}
 
       {(['jakaSensor', 'staubliSensor'] as const).map((id) => {
-        const end = id === 'jakaSensor' ? LAYOUT.conveyors.jakaToStaubli.from : LAYOUT.conveyors.jakaToStaubli.to;
-        const p = sp({ x: end.x, y: end.y - 85 });
+        const belt = LAYOUT.conveyors.jakaToStaubli;
+        const end = id === 'jakaSensor' ? { x: belt.from.x - 40, y: belt.from.y } : { x: belt.to.x + 60, y: belt.to.y };
+        const on = signalValue(data, id);
+        const side = belt.width / 2 + 28;
+        const top = sp({ x: end.x, y: end.y + side });
+        const bottom = sp({ x: end.x, y: end.y - side });
+        const w = 45 * K;
+        const h = 34 * K;
         return (
           <g key={id}>
-            <Led x={p.x} y={p.y} value={signalValue(data, id)} label="" />
-            <text x={p.x} y={p.y + 16} textAnchor="middle" className="svg-small">
+            {on && <line x1={top.x} y1={top.y} x2={bottom.x} y2={bottom.y} className="svg-beam" />}
+            {[top, bottom].map((q, i) => (
+              <rect key={i} x={q.x - w / 2} y={q.y - h / 2} width={w} height={h} rx={1.5} className="svg-sensor" />
+            ))}
+            <Led x={bottom.x} y={bottom.y + h / 2 + 9} value={on} label="" />
+            <text x={bottom.x} y={bottom.y + h / 2 + 26} textAnchor="middle" className="svg-small">
               {id === 'jakaSensor' ? 'Sensor Jaka' : 'Sensor Stäubli'}
             </text>
           </g>
