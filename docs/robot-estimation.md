@@ -71,7 +71,7 @@ the real cell.
 | Home, waiting for the PLC | home | `Jaka DI3` high (PLC step 0) |
 | Picking the plate | abovePlate → pickPlate → abovePlate | `Jaka DO5` rises *(optional)* |
 | Putting the plate on the conveyor | aboveConveyor → placeConveyor | `Sensor Jaka` rises |
-| Releasing the plate | placeConveyor | `Jaka DO7` rises |
+| Releasing the plate | placeConveyor (gripper opens) → aboveConveyor | `Jaka DO7` rises (the Jaka program sets it after lifting clear of the plate) |
 | Returning home | aboveConveyor → home | time |
 
 ### Stäubli TS60 (4-axis SCARA)

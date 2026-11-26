@@ -19,12 +19,15 @@ What is in it:
 - Joints computed every frame from the estimator state (`src/three/frame.ts`),
   so the motion is smooth at the display frame rate; live joints win when
   fresh.
-- Table, both conveyors (belt texture moves while the output is on), belt
-  sensors that light up, whiteboard, plate stand, marker holder.
-- Plate with 3 holes carrying the two big-head parts, parts standing on the
+- Two tables with the conveyor crossing the gap, green belt on an
+  aluminium frame (texture moves while the output is on), end stops, a
+  green sensor pair at each end (indicator and beam when on), whiteboard,
+  plate stand, L-shaped plate guides, marker holder. Shapes and colours
+  follow photos of the cell; sizes stay placeholders.
+- Grey plate with 3 square holes, square part standing on it or on the
   board, marker, ink of the squares, gripper fingers sized to the held object.
 - Phase labels above the robots, camera presets (overview, Stäubli,
-  whiteboard, Jaka) and orbit controls, red frame on E-stop, grey overlay
+  whiteboard, conveyor, Jaka) and orbit controls, red frame on E-stop, grey overlay
   when there is no live data.
 
 Not done yet: level 1 models (vendor CAD), the joint map table (needed once
@@ -142,7 +145,7 @@ the squares drawn on the board as the Stäubli moves.
 | Element | Driven by |
 |---|---|
 | Table, robot stand, part source, destination fixture | `layout.ts` (static) |
-| Two conveyors, belt texture scrolls while the output is on | `Conveyor Jaka → Stäubli`, `Conveyor Stäubli → Jaka` |
+| The conveyor, belt texture scrolls while the output is on | `Conveyor Jaka → Stäubli` (the `Conveyor Stäubli → Jaka` output has no belt on the cell) |
 | Belt sensors, emitter glows when on | `Sensor Jaka`, `Sensor Stäubli` |
 | Robots | Joint values (live or estimated) |
 | Part in a gripper, attached to the tool frame | `RobotEstimate.holding` |
