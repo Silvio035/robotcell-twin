@@ -38,7 +38,8 @@ export const LAYOUT = {
   /** Area drawn in the 2D view. */
   bounds: { minX: -650, maxX: 2050, minY: -650, maxY: 650 },
   robots: {
-    staubli: { x: 0, y: 0, yaw: 0 },
+    // Behind the whiteboard, facing the conveyor (robot +x points to cell -y).
+    staubli: { x: 300, y: 380, yaw: -90 },
     jaka: { x: 1500, y: 0, yaw: 0 },
   } satisfies Record<RobotId, RobotMount>,
   /**
@@ -58,50 +59,58 @@ export const LAYOUT = {
     jakaToStaubli: { from: { x: 1150, y: -150 }, to: { x: 450, y: -150 }, width: 120, height: 100 },
   } satisfies Record<string, ConveyorLayout>,
   /**
-   * Square block (dark body, grey cap) standing upright on the plate. The
-   * Stäubli grips it by two sides at `gripZ` above its bottom.
+   * Square block (dark body, grey cap). The same block is used twice: as the
+   * part the Stäubli moves to the board, and fixed on the plate as its handle.
+   * Grippers take it by two sides at `gripZ` above its bottom.
    */
   part: { size: 25, height: 25, capHeight: 5, gripZ: 15 },
   /**
    * Grey plate with 3 square holes in a triangle: two at the far edge and
-   * one in the middle of the near edge. Every plate position in this file is
-   * the centre of that near hole (the grip hole), where both grippers take
-   * the plate with the fingers opening inside it. Offsets below are from it:
-   * `centre` of the plate outline, `holes`, and `partSpots`, where each part
-   * stands on the plate (one for now, between the far holes; see PART_COUNT).
+   * one in the middle of the near edge. Between the two far holes a block is
+   * fixed on the plate as its handle: both robots take the plate by it. The
+   * part sits in the middle hole, standing on whatever is under the plate.
+   * Every plate position in this file is the centre of the handle; offsets
+   * below are from it: `centre` of the plate outline, `holes`, and
+   * `partSpots`, the hole of each part (one for now; see PART_COUNT).
    */
   plate: {
     length: 150,
     width: 100,
     thickness: 8,
-    holeSize: 25,
-    centre: { x: 0, y: 22 },
+    holeSize: 29,
+    centre: { x: 0, y: -22 },
     holes: [
-      { x: -45, y: 44 },
-      { x: 45, y: 44 },
-      { x: 0, y: 0 },
+      { x: -45, y: 0 },
+      { x: 45, y: 0 },
+      { x: 0, y: -44 },
     ],
-    partSpots: [{ x: 0, y: 44 }],
+    partSpots: [{ x: 0, y: -44 }],
   },
   /** L-shaped corner guides that locate the plate at its start on the Jaka table. */
   plateGuide: { leg: 35, width: 12 },
   /** Marker standing tip down in its holder; tipReach = tip below the gripper tip. */
   marker: { length: 130, diameter: 18, tipReach: 60, standOffset: 5 },
-  /** Whiteboard on the Stäubli table (centre, size, top surface height). */
-  board: { x: -200, y: 300, width: 300, depth: 200, z: 5 },
+  /**
+   * Whiteboard on the Stäubli table, in front of the Stäubli, between it and
+   * the conveyor's last stretch (centre, size, top surface height).
+   */
+  board: { x: 250, y: 60, width: 300, depth: 200, z: 5 },
   /** Part centres on the board, one per part; a square is drawn around each one. */
-  boardSlots: [{ x: -200, y: 300 }],
+  boardSlots: [{ x: 250, y: 60 }],
   /** Half side of the drawn squares. */
   squareHalf: 45,
-  /** Plate centre at the start (Jaka table) and on the Stäubli stand (z = stand top). */
+  /**
+   * Plate grip hole at the start (Jaka table) and where the Stäubli leaves
+   * it, lying on its table beside the board (no stand).
+   */
   jakaPlateStart: { x: 1500, y: -380, z: 0 },
-  staubliPlateSpot: { x: 280, y: 330, z: 30 },
+  staubliPlateSpot: { x: 560, y: 230, z: 0 },
   /** Marker holder on the Stäubli table (start and end of every run). */
-  staubliMarkerHolder: { x: 150, y: -380, z: 40 },
+  staubliMarkerHolder: { x: 60, y: 270, z: 40 },
   /** Approach height above pick and place points. */
   approach: 80,
   /** Tool positions at home. */
-  staubliHome: { x: 350, y: 100 },
+  staubliHome: { x: 300, y: 160 },
   jakaHome: { x: 1300, y: 200, z: 300 },
 };
 

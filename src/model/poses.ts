@@ -25,8 +25,8 @@ const at = (p: Point2, z: number): Point3 => ({ x: p.x, y: p.y, z });
 const staubli = (p: Point3) => scaraIk(toRobotFrame('staubli', p));
 const jaka = (p: Point3) => jakaIkDown(toRobotFrame('jaka', p));
 
-/** Gripper tip height with the fingers inside the plate's grip hole, plate lying on `surface`. */
-const plateGrip = (surface: number) => surface + plate.thickness / 2;
+/** Gripper tip height that grips the plate's handle block; the plate lies on `surface`. */
+export const plateGrip = (surface: number) => surface + plate.thickness + part.gripZ;
 /** Gripper tip height that grips a part by its sides; the part stands on `surface`. */
 const partGrip = (surface: number) => surface + part.gripZ;
 /** Gripper tip height that grips the upright marker standing on `surface`. */
@@ -68,15 +68,15 @@ export interface PartPoses {
 }
 
 /**
- * Stäubli poses for each part: pick it where it stands on the plate (on the
- * plate's top surface) and place it on its board slot.
+ * Stäubli poses for each part: pick it from its plate hole (the part stands
+ * on the table through the hole) and place it on its board slot.
  */
 export const STAUBLI_PART_POSES: readonly PartPoses[] = plate.partSpots.map((offset, i) => {
-  const onTop = onPlate(spot, offset);
+  const inHole = onPlate(spot, offset);
   const slot = LAYOUT.boardSlots[i]!;
   return {
-    aboveOnPlate: staubli(at(onTop, top)),
-    pickOnPlate: staubli(at(onTop, partGrip(spot.z + plate.thickness))),
+    aboveOnPlate: staubli(at(inHole, top)),
+    pickOnPlate: staubli(at(inHole, partGrip(spot.z))),
     aboveSlot: staubli(at(slot, top)),
     placeSlot: staubli(at(slot, partGrip(board.z))),
   };

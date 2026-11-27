@@ -1,30 +1,34 @@
 (********************************************************************
  * COPYRIGHT --  
  ********************************************************************
- * Program: NewProgram
+ * PROGRAM: NewProgram
  * File: NewProgramCyclic.st
  * Author: supervisorio
  * Created: May 29, 2026
  ********************************************************************
  * Whiteboard application (docs/whiteboard-application.md):
  *   1. Jaka puts the plate (NUM_PECAS parts in its holes) on the conveyor.
- *   2. The conveyor brings the plate to the Staubli.
- *   3. Staubli puts the plate on its table and the parts on the board.
+ *   2. The conveyor brings the plate TO the Staubli.
+ *   3. Staubli puts the plate on its table AND the parts on the board.
  *   4. Staubli picks the marker from its table, draws a square around
- *      each part and puts the marker back.
- * NUM_PECAS (NewProgram.var) is 1 for now: one part, one square.
+ *      each part AND puts the marker back.
+ * NUM_PECAS (NewProgram.var) is 1 FOR now: one part, one square.
  * Every robot task uses a four-phase handshake (no timers):
  *   PLC sets CMD -> robot sets DONE -> PLC clears CMD -> robot clears DONE.
- * One run per press of the start button: Ligar is cleared at the end
- * of the cycle and on E-stop.
+ * One run per press OF the start button: Ligar is cleared at the end
+ * OF the cycle AND on E-stop.
  ********************************************************************)
 PROGRAM _CYCLIC
 
+	TmrPulso(IN := Ligar AND Emergencia, PT := T#1s);
+	TmrDI12(IN := Etapa = 2, PT := T#1s);
+	
 	IF Ligar AND Emergencia THEN
-
-		Jaka_DI2 := TRUE;							//Enable Jaka while the cycle runs
-		Staubli_DI13 := TRUE;						//Enable Staubli while the cycle runs
-
+		
+		Jaka_DI2 := NOT TmrPulso.Q;		//Pulse: ON for the first 1 s of the cycle, then OFF
+		Staubli_DI13 := NOT TmrPulso.Q;
+		LIGA_JAKA := TRUE;
+		
 		CASE Etapa OF
 
 			0: (* Start *)
@@ -39,10 +43,11 @@ PROGRAM _CYCLIC
 				Etapa := 1;
 
 			1: (* Plate to the Staubli *)
-				IF Jaka_DI3 AND Jaka_DO7 AND Sensor_Jaka THEN
-					Jaka_DI3 := FALSE;					//Jaka done: plate on the conveyor
+				IF Jaka_DO7 = TRUE THEN
+					//Jaka_DI3 := FALSE;					//Jaka done: plate on the conveyor
 					PlacaNaEsteira := TRUE;
-					Esteira_JakaStaubli := TRUE;		//Carry the plate to the Staubli
+					Esteira_JakaStaubli := TRUE;
+					Jaka_DI2 := FALSE;	//Carry the plate to the Staubli
 				END_IF;
 
 				IF Esteira_JakaStaubli AND Sensor_Staubli THEN
@@ -56,7 +61,7 @@ PROGRAM _CYCLIC
 				END_IF;
 
 			2: (* Staubli: plate on the table, parts on the board *)
-				Staubli_DI12 := TRUE;					//CMD Staubli: plate to the table, parts to the board
+				Staubli_DI12 := NOT TmrDI12.Q;			//CMD Staubli: plate to the table, parts to the board
 				IF Staubli_DO4 THEN
 					Staubli_DI12 := FALSE;				//Staubli done: parts on the board
 					PecasNoQuadro := TRUE;
@@ -88,7 +93,8 @@ PROGRAM _CYCLIC
 		END_CASE;
 
 	ELSE
-		//Stop or E-stop: every command and enable goes FALSE
+		//Stop or E-stop: every command and enable goes FALS
+		LIGA_JAKA := FALSE;
 		Jaka_DI1 := FALSE;
 		Jaka_DI2 := FALSE;
 		Jaka_DI3 := FALSE;
@@ -102,6 +108,18 @@ PROGRAM _CYCLIC
 			Ligar := FALSE;							//Releasing the E-stop must not restart the cell
 		END_IF;
 		Etapa := 0;
+
+		//Reset the process state too, so the HMI colors, counters and progress go back to "waiting".
+		//Skipped right after a finished cycle: CicloConcluido stays TRUE until the next start,
+		//so the "done" state and the cycle time stay on screen.
+		IF NOT CicloConcluido THEN
+			PlacaNaEsteira := FALSE;
+			PlacaChegou := FALSE;
+			PecasNoQuadro := FALSE;
+			iPecasNoQuadro := 0;
+			iQuadrados := 0;
+			iTempoCiclo_s := 0;
+		END_IF;
 	END_IF;
 
 	//Progress counters from the robots' optional pulses (Staubli DO6 = part placed, DO7 = square drawn)

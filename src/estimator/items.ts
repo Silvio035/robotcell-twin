@@ -38,6 +38,10 @@ export interface ItemsState {
   squaresDone: number;
   cycleStartedAt: number | null;
   cycleEndedAt: number | null;
+  /** Completed-cycle counter from the PLC when the run started. */
+  countAtStart: number | null;
+  /** The last run ended with the cycle counted (not stopped or E-stopped). */
+  cycleCompleted: boolean;
   /** Previous robot state, to detect gripper and segment changes. */
   robots: Record<RobotId, { holding: boolean; segment: number; stopped: boolean }>;
   lastAt: number;
@@ -53,6 +57,8 @@ export interface ItemsEstimate {
   squaresDone: number;
   cycleStartedAt: number | null;
   cycleEndedAt: number | null;
+  /** The last run ended with the cycle counted, like CicloConcluido in the PLC. */
+  cycleCompleted: boolean;
 }
 
 /** Conveyor travel from Sensor Jaka to Sensor Stäubli, measured on the cell (about 7 s); refined from each run. */
@@ -82,6 +88,8 @@ export function initialItems(now: number): ItemsState {
     squaresDone: 0,
     cycleStartedAt: null,
     cycleEndedAt: null,
+    countAtStart: null,
+    cycleCompleted: false,
     robots: {
       jaka: { holding: false, segment: 0, stopped: true },
       staubli: { holding: false, segment: 0, stopped: true },
@@ -157,8 +165,15 @@ export function updateItems(
     s.squaresDone = 0;
     s.cycleStartedAt = now;
     s.cycleEndedAt = null;
+    s.countAtStart = io.count;
+    s.cycleCompleted = false;
   }
-  if (fall('jakaDi2') && s.cycleStartedAt !== null && s.cycleEndedAt === null) s.cycleEndedAt = now;
+  // End of the run: the Jaka DI2 byte carries LIGA_JAKA (TRUE while a cycle
+  // runs). The run completed if the PLC counted it; a stop or E-stop does not.
+  if (fall('jakaDi2') && s.cycleStartedAt !== null && s.cycleEndedAt === null) {
+    s.cycleEndedAt = now;
+    s.cycleCompleted = io.count !== null && s.countAtStart !== null && io.count !== s.countAtStart;
+  }
 
   // Gripper changes. A gripper that empties because the robot restarts after a
   // stop has not placed anything: the estimator just reset its task.
@@ -237,6 +252,7 @@ export function itemsEstimate(s: ItemsState): ItemsEstimate {
     squaresDone: s.squaresDone,
     cycleStartedAt: s.cycleStartedAt,
     cycleEndedAt: s.cycleEndedAt,
+    cycleCompleted: s.cycleCompleted,
   };
 }
 

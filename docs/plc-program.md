@@ -13,7 +13,7 @@ Compared file by file with the template the professor handed out
 | Hardware (4PP481 + X20 modules, AR E3.10, IP `192.168.0.70`) | Yes | Same (only the panel's hardware description version differs, 1.1.0.0 vs 1.0.0.0) |
 | Program | **None** (`Cpu.sw` has no task) | `NewProgram` with the sequence below |
 | I/O mapping | Leftover entries for a program `Robos` that is not in the project, with an older wiring that does **not** match Table I | Matches Table I |
-| HMI | B&R coffee-machine sample pages only | Adds `Init_Page` (start/stop buttons, 12-part progress) |
+| HMI | B&R coffee-machine sample pages only | Adds `Init_Page` (start button, step lamps, counters, whiteboard, plate position) |
 | Shared files | | 381 of the template's Logical files are identical |
 
 So this project was built from the professor's template: it keeps the
@@ -51,7 +51,7 @@ application ([whiteboard-application.md](whiteboard-application.md)).
 | `Jaka_DO7` | DI9371 ch 1 | DONE: plate on the conveyor |
 | `Jaka_DO6` | DI9371 ch 2 | Spare |
 | `Jaka_DO5` | DI9371 ch 3 | Pulse: plate gripped (used by the twin only) |
-| `Staubli_DO4` | DI9371 ch 5 | DONE: plate on the stand, part on the board |
+| `Staubli_DO4` | DI9371 ch 5 | DONE: plate on the table, part on the board |
 | `Staubli_DO5` | DI9371 ch 6 | DONE: square drawn, marker stored |
 | `Staubli_DO6` | DI9371 ch 7 | Pulse: one part placed |
 | `Staubli_DO7` | DI9371 ch 8 | Pulse: one square drawn |
@@ -59,10 +59,10 @@ application ([whiteboard-application.md](whiteboard-application.md)).
 | `Sensor_Jaka` | DI9371 ch 10 | Plate at the Jaka end of the conveyor |
 | `Emergencia` | DI9371 ch 12 | TRUE = safe |
 | `Jaka_DI3` | DO9322 ch 1 | CMD: put the plate on the conveyor |
-| `Jaka_DI2` | DO9322 ch 2 | Enable, TRUE while a cycle runs |
+| `Jaka_DI2` | DO9322 ch 2 | 1 s pulse at the start of the cycle (cleared early on `Jaka_DO7`) |
 | `Jaka_DI1` | DO9322 ch 3 | Spare |
-| `Staubli_DI12` | DO9322 ch 5 | CMD: plate to the stand, part to the board |
-| `Staubli_DI13` | DO9322 ch 6 | Enable, TRUE while a cycle runs |
+| `Staubli_DI12` | DO9322 ch 5 | CMD: plate to the table, part to the board (1 s pulse at the start of step 2) |
+| `Staubli_DI13` | DO9322 ch 6 | 1 s pulse at the start of the cycle |
 | `Staubli_DI14` | DO9322 ch 7 | CMD: pick the marker, draw, put it back |
 | `Staubli_DI15` | DO9322 ch 8 | Spare |
 | `Esteira_StaubliJaka` | DO9322 ch 11 | Spare (always FALSE) |
@@ -70,15 +70,22 @@ application ([whiteboard-application.md](whiteboard-application.md)).
 
 ## Sequence
 
-Each robot task is a four-phase handshake: the PLC sets the command, the
-robot sets DONE when it has finished, the PLC clears the command, the robot
-clears DONE. There are no timers in the sequence.
+Sequence as run on the lab panel. The robots get start pulses instead of
+the full four-phase handshake: `Jaka_DI2` and `Staubli_DI13` are 1 s pulses
+at the start of the cycle (timer `TmrPulso`), `Staubli_DI12` is a 1 s pulse
+at the start of step 2 (timer `TmrDI12`), and `Jaka_DI3` stays TRUE for the
+whole cycle. The robots still clear their DONE outputs themselves, and the
+PLC waits for that before moving on.
+
+`LIGA_JAKA` is TRUE while a cycle runs (`Ligar AND Emergencia`).
+`TwinSender` sends it in the `Jaka_DI2` byte, so the digital twin sees
+"cycle running" there rather than the 1 s pulse.
 
 | `Etapa` | Does | Next when |
 |---|---|---|
 | 0 | Idle. On start: reset flags and counters, set `Jaka_DI3` | `Ligar AND Emergencia` |
-| 1 | `Jaka_DO7 AND Sensor_Jaka` → clear `Jaka_DI3`, start the conveyor. Conveyor `AND Sensor_Staubli` → stop it | Plate arrived and `Jaka_DO7` cleared |
-| 2 | Set `Staubli_DI12`; on `Staubli_DO4` clear it | `Staubli_DO4` |
+| 1 | On `Jaka_DO7`: start the conveyor (and end the `Jaka_DI2` pulse). Conveyor `AND Sensor_Staubli` → stop it | Plate arrived and `Jaka_DO7` cleared |
+| 2 | 1 s `Staubli_DI12` pulse; on `Staubli_DO4` clear it | `Staubli_DO4` |
 | 3 | Wait for the Stäubli to clear DONE | `Staubli_DO4` cleared |
 | 4 | Set `Staubli_DI14`; on `Staubli_DO5` clear it | `Staubli_DO5` |
 | 5 | Count the cycle, clear `Ligar` | `Staubli_DO5` cleared → 0 |
@@ -88,33 +95,36 @@ clears DONE. There are no timers in the sequence.
   with the part back at the Jaka and taking the part off the board).
 - `NUM_PECAS` (constant in `NewProgram.var`, 1 for now) is the number of
   parts per run: the counters stop at it and jump to it on the DONE signals.
-- Stop (**Desligar**) or E-stop: every command, enable and conveyor goes
-  FALSE and `Etapa` returns to 0. E-stop also clears `Ligar`, so releasing it
-  never restarts the cell by itself.
+- E-stop: every command, enable, `LIGA_JAKA` and conveyor goes FALSE and
+  `Etapa` returns to 0. It also clears `Ligar`, so releasing it never
+  restarts the cell by itself. The HMI state (lamps, counters, cycle time)
+  resets too, unless the cycle had finished (`CicloConcluido`), which stays
+  on screen until the next start.
+- The HMI has no stop button any more (**Desligar** was removed).
 - `Staubli_DO6` / `Staubli_DO7` pulses advance the HMI counters. If the
   Stäubli program does not pulse them, the counters jump to 2 when the
   matching DONE arrives.
 - `TwinSender;` stays the last line of `_CYCLIC`.
 
-This replaces the previous sequence (below). Not compiled yet: the first
-build happens on the lab PC.
+This is the program compiled and run on the lab panel, with the `AsUDP`
+library added for `TwinSender`.
 
 ## HMI (`Init_Page`)
 
 ![HMI preview](images/hmi-preview.png)
 
-*Preview drawn from the page file with sample values, not a screenshot of
-the panel.*
+*Preview drawn from an earlier version of the page file with sample values,
+not a screenshot of the panel. The page on the panel no longer has the
+Desligar button or the progress bar, and the cycle time shows only seconds.*
 
 | Element | Variable |
 |---|---|
-| Ligar / Desligar | `Ligar` (set to 1 / 0) |
+| Ligar | `Ligar` (set to 1) |
 | Step lamps: Jaka (plate on the conveyor), conveyor, Stäubli part, drawing, cycle done | `iCorJaka`, `iCorEsteira`, `iCorPecas`, `iCorDesenho`, `iCorConcluido` |
 | Part on the board, square, cycle time (s), completed cycles | `iPecasNoQuadro`, `iQuadrados`, `iTempoCiclo_s`, `iContador` |
 | Whiteboard: the part and its square light up | `iCorPeca`, `iCorQuadrado` |
 | Plate position: Jaka / conveyor / Stäubli | `iCorPlacaJaka`, `iCorPlacaEsteira`, `iCorPlacaStaubli` (from `iPlaca`) |
 | E-stop lamp | `iCorEmergencia` |
-| Progress bar 0..2 | `iProgresso` (part + square) |
 | Color legend (bottom row) | Fixed swatches: waiting, running, done, E-stop, part |
 
 Lamp colors are palette indexes computed in the PLC, the same technique the

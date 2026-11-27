@@ -27,7 +27,7 @@ ACTION TwinSender:
 
 	(* Bytes 12..23: X20DO9322 channels 1..12 *)
 	TwinPacket[12] := BOOL_TO_USINT(Jaka_DI3);
-	TwinPacket[13] := BOOL_TO_USINT(Jaka_DI2);
+	TwinPacket[13] := BOOL_TO_USINT(LIGA_JAKA);
 	TwinPacket[14] := BOOL_TO_USINT(Jaka_DI1);
 	TwinPacket[16] := BOOL_TO_USINT(Staubli_DI12);
 	TwinPacket[17] := BOOL_TO_USINT(Staubli_DI13);
@@ -48,6 +48,7 @@ ACTION TwinSender:
 			IF TwinOpen.status = ERR_OK THEN
 				TwinState := 1;
 			ELSIF TwinOpen.status <> ERR_FUB_BUSY THEN
+				TwinOpenErr := TwinOpen.status;     // erro real, antes de desligar o bloco
 				TwinOpen(enable := FALSE);
 				TwinState := 3;
 			END_IF;

@@ -18,8 +18,8 @@ const toWorld = (x: number, y: number, z: number): [number, number, number] => [
 
 const PRESETS = {
   overview: { label: 'Overview', camera: toWorld(650, -2000, 1500), target: toWorld(650, 50, 50) },
-  staubli: { label: 'Stäubli', camera: toWorld(850, -600, 700), target: toWorld(100, 150, 60) },
-  board: { label: 'Whiteboard', camera: toWorld(-700, 250, 520), target: toWorld(-200, 300, 0) },
+  staubli: { label: 'Stäubli', camera: toWorld(900, -550, 750), target: toWorld(320, 200, 60) },
+  board: { label: 'Whiteboard', camera: toWorld(250, -450, 600), target: toWorld(250, 60, 0) },
   conveyor: { label: 'Conveyor', camera: toWorld(800, -750, 650), target: toWorld(800, -100, 60) },
   jaka: { label: 'Jaka', camera: toWorld(1050, -900, 650), target: toWorld(1450, -250, 60) },
 } as const;
