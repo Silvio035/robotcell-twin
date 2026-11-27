@@ -125,7 +125,9 @@ function fired(e: EventDef, io: PlcIoSnapshot, prev: PlcIoSnapshot | null): bool
   if (e.also && !e.also.every((id) => level(io, id))) return false;
   const now = level(io, e.signal);
   if (e.when === 'high') return now;
-  if (!prev) return false;
+  // First snapshot (demo start, or joining a running cell): a signal that is
+  // already on counts as having just risen, so a robot waiting for it starts.
+  if (!prev) return e.when === 'rise' && now;
   const before = level(prev, e.signal);
   return e.when === 'rise' ? now && !before : !now && before;
 }
