@@ -256,7 +256,7 @@ export function Ink() {
   );
 }
 
-/** Plate outline with its 3 square holes, extruded; origin at the grip hole, bottom face. */
+/** Plate outline with its 3 square holes, extruded; origin under the handle, bottom face. */
 function usePlateGeometry(): ExtrudeGeometry {
   return useMemo(() => {
     const { length, width, thickness, holeSize, centre, holes } = plate;
@@ -288,7 +288,7 @@ function usePlateGeometry(): ExtrudeGeometry {
 }
 
 /** One square part, origin at the centre of its bottom face. */
-function PartMesh({ refCb }: { refCb: (g: Group | null) => void }) {
+function PartMesh({ refCb }: { refCb?: (g: Group | null) => void }) {
   const body = part.height - part.capHeight;
   return (
     <group ref={refCb}>
@@ -304,7 +304,7 @@ function PartMesh({ refCb }: { refCb: (g: Group | null) => void }) {
   );
 }
 
-/** Plate (origin at its grip hole, bottom face), the parts and the marker. */
+/** Plate (origin under its handle, bottom face), the parts and the marker. */
 export function Items3D() {
   const plateRef = useRef<Group>(null);
   const markerRef = useRef<Group>(null);
@@ -320,7 +320,7 @@ export function Items3D() {
     partRefs.current.forEach((g) => g && (g.visible = visible));
     if (!items) return;
 
-    // Plate: grip hole, bottom face.
+    // Plate: under the handle, bottom face.
     const belt = LAYOUT.conveyors.jakaToStaubli;
     let p = { x: 0, y: 0, z: 0 };
     if (items.plate === 'jakaTable') p = { ...LAYOUT.jakaPlateStart };
@@ -330,18 +330,19 @@ export function Items3D() {
       p = { x: belt.from.x + (belt.to.x - belt.from.x) * t, y: belt.from.y + (belt.to.y - belt.from.y) * t, z: belt.height };
     } else {
       const tool = robotAt(items.plate === 'jakaGripper' ? 'jaka' : 'staubli', now).tool;
-      p = { x: tool.x, y: tool.y, z: tool.z - plate.thickness / 2 };
+      // Held by its handle.
+      p = { x: tool.x, y: tool.y, z: tool.z - plate.thickness - part.gripZ };
     }
     plateRef.current?.position.set(p.x, p.y, p.z);
 
-    // Parts: bottom face. On the plate they stand on its top surface.
+    // Parts: bottom face. In the plate a part sits in its hole, level with the plate's bottom.
     const staubliTool = robotAt('staubli', now).tool;
     items.parts.forEach((place, i) => {
       const g = partRefs.current[i];
       if (!g) return;
       const at =
         place === 'plate'
-          ? { ...onPlate(p, plate.partSpots[i]!), z: p.z + plate.thickness }
+          ? { ...onPlate(p, plate.partSpots[i]!), z: p.z }
           : place === 'board'
             ? { ...LAYOUT.boardSlots[i]!, z: board.z }
             : { x: staubliTool.x, y: staubliTool.y, z: staubliTool.z - part.gripZ };
@@ -366,6 +367,10 @@ export function Items3D() {
         <mesh geometry={plateGeometry}>
           <meshStandardMaterial color={COLORS.plate} roughness={0.6} />
         </mesh>
+        {/* Handle: a block fixed on the plate, where both robots grip it. */}
+        <group position={[0, 0, plate.thickness]}>
+          <PartMesh />
+        </group>
       </group>
       {Array.from({ length: PART_COUNT }, (_, i) => (
         <PartMesh key={i} refCb={(g) => void (partRefs.current[i] = g)} />

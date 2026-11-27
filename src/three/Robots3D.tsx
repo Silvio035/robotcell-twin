@@ -51,11 +51,11 @@ function useFingers(robot: 'jaka' | 'staubli') {
     const items = useTwinStore.getState().items;
     const holdsPlate = items?.plate === (robot === 'jaka' ? 'jakaGripper' : 'staubliGripper');
     const holdsMarker = robot === 'staubli' && items?.marker === 'gripper';
-    // Plate: internal grip, fingers open inside its grip hole.
+    // Plate: held by its handle block, same size as a part.
     const gap = !holding
       ? 60
       : holdsPlate
-        ? LAYOUT.plate.holeSize - 4
+        ? LAYOUT.part.size
         : holdsMarker
           ? LAYOUT.marker.diameter
           : LAYOUT.part.size;

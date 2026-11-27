@@ -67,7 +67,7 @@ function Part({ at }: { at: Point2 }) {
   );
 }
 
-/** The plate seen from above, with its 3 square holes. `at` is its grip hole. */
+/** The plate seen from above, with its 3 square holes and the handle block. `at` is the handle. */
 function Plate({ at }: { at: Point2 }) {
   const { length, width, centre, holes, holeSize } = LAYOUT.plate;
   const p = sp(onPlate(at, centre));
@@ -79,6 +79,7 @@ function Plate({ at }: { at: Point2 }) {
         const c = sp(onPlate(at, offset));
         return <rect key={i} x={c.x - h / 2} y={c.y - h / 2} width={h} height={h} className="svg-plate-hole" />;
       })}
+      <Part at={at} />
     </g>
   );
 }

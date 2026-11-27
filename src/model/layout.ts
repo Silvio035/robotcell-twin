@@ -59,30 +59,32 @@ export const LAYOUT = {
     jakaToStaubli: { from: { x: 1150, y: -150 }, to: { x: 450, y: -150 }, width: 120, height: 100 },
   } satisfies Record<string, ConveyorLayout>,
   /**
-   * Square block (dark body, grey cap) standing upright on the plate. The
-   * Stäubli grips it by two sides at `gripZ` above its bottom.
+   * Square block (dark body, grey cap). The same block is used twice: as the
+   * part the Stäubli moves to the board, and fixed on the plate as its handle.
+   * Grippers take it by two sides at `gripZ` above its bottom.
    */
   part: { size: 25, height: 25, capHeight: 5, gripZ: 15 },
   /**
    * Grey plate with 3 square holes in a triangle: two at the far edge and
-   * one in the middle of the near edge. Every plate position in this file is
-   * the centre of that near hole (the grip hole), where both grippers take
-   * the plate with the fingers opening inside it. Offsets below are from it:
-   * `centre` of the plate outline, `holes`, and `partSpots`, where each part
-   * stands on the plate (one for now, between the far holes; see PART_COUNT).
+   * one in the middle of the near edge. Between the two far holes a block is
+   * fixed on the plate as its handle: both robots take the plate by it. The
+   * part sits in the middle hole, standing on whatever is under the plate.
+   * Every plate position in this file is the centre of the handle; offsets
+   * below are from it: `centre` of the plate outline, `holes`, and
+   * `partSpots`, the hole of each part (one for now; see PART_COUNT).
    */
   plate: {
     length: 150,
     width: 100,
     thickness: 8,
-    holeSize: 25,
-    centre: { x: 0, y: 22 },
+    holeSize: 29,
+    centre: { x: 0, y: -22 },
     holes: [
-      { x: -45, y: 44 },
-      { x: 45, y: 44 },
-      { x: 0, y: 0 },
+      { x: -45, y: 0 },
+      { x: 45, y: 0 },
+      { x: 0, y: -44 },
     ],
-    partSpots: [{ x: 0, y: 44 }],
+    partSpots: [{ x: 0, y: -44 }],
   },
   /** L-shaped corner guides that locate the plate at its start on the Jaka table. */
   plateGuide: { leg: 35, width: 12 },
