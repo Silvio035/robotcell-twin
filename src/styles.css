@@ -641,6 +641,23 @@ button.secondary {
   border: 4px solid var(--danger);
 }
 
+.cell-3d:fullscreen {
+  height: 100vh;
+  width: 100vw;
+  border-radius: 0;
+  background: #121a22;
+}
+
+.fullscreen-3d {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+  display: grid;
+  place-items: center;
+  padding: 0.35rem;
+  line-height: 0;
+}
+
 .presets {
   position: absolute;
   bottom: 0.6rem;

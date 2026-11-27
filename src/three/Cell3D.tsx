@@ -85,12 +85,43 @@ function PhaseLabels({ labels }: { labels: RefObject<Record<RobotId, HTMLDivElem
   );
 }
 
+/** Full screen for the 3D view (the whole box, so labels and presets come along). */
+function useFullscreen(target: RefObject<HTMLElement | null>) {
+  const [active, setActive] = useState(false);
+  useEffect(() => {
+    const onChange = () => setActive(document.fullscreenElement === target.current);
+    document.addEventListener('fullscreenchange', onChange);
+    return () => document.removeEventListener('fullscreenchange', onChange);
+  }, [target]);
+  const supported = typeof document !== 'undefined' && document.fullscreenEnabled;
+  const toggle = () => {
+    // Rejected when the page is embedded without full-screen permission; nothing to do then.
+    if (document.fullscreenElement) document.exitFullscreen().catch(() => undefined);
+    else target.current?.requestFullscreen().catch(() => undefined);
+  };
+  return { active, supported, toggle };
+}
+
+function FullscreenIcon({ exit }: { exit: boolean }) {
+  // Four corner brackets pointing out (enter) or in (exit).
+  const d = exit
+    ? 'M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5'
+    : 'M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5';
+  return (
+    <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+      <path d={d} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 export default function Cell3D({ stale, emergency }: { stale: boolean; emergency: boolean }) {
   const [preset, setPreset] = useState<PresetId>('overview');
   const labels = useRef<Record<RobotId, HTMLDivElement | null>>({ staubli: null, jaka: null });
+  const box = useRef<HTMLDivElement>(null);
+  const fullscreen = useFullscreen(box);
 
   return (
-    <div className={`cell-3d ${emergency ? 'is-emergency' : ''}`}>
+    <div ref={box} className={`cell-3d ${emergency ? 'is-emergency' : ''}`}>
       <Canvas camera={{ fov: 40, near: 0.01, far: 50, position: PRESETS.overview.camera }} dpr={[1, 2]}>
         <color attach="background" args={['#121a22']} />
         <ambientLight intensity={0.6} />
@@ -115,6 +146,17 @@ export default function Cell3D({ stale, emergency }: { stale: boolean; emergency
           </button>
         ))}
       </div>
+      {fullscreen.supported && (
+        <button
+          type="button"
+          className="secondary fullscreen-3d"
+          onClick={fullscreen.toggle}
+          aria-label={fullscreen.active ? 'Exit full screen' : 'Full screen'}
+          title={fullscreen.active ? 'Exit full screen (Esc)' : 'Full screen'}
+        >
+          <FullscreenIcon exit={fullscreen.active} />
+        </button>
+      )}
       {emergency && <div className="banner-3d is-emergency">EMERGENCY STOP</div>}
       {stale && <div className="overlay-3d">No live PLC data</div>}
     </div>
