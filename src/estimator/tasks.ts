@@ -66,7 +66,8 @@ export const TASKS: Record<RobotId, TaskDef> = {
         path: [J.home],
         defaultMs: 2000,
         learn: false,
-        endsOn: [{ signal: 'jakaDi3', when: 'high' }],
+        // DI3 stays on for the whole cycle, so only its rise starts a pick.
+        endsOn: [{ signal: 'jakaDi3', when: 'rise' }],
       },
       {
         label: 'Picking the plate',

@@ -34,7 +34,9 @@ export const IO_POINTS = [
 
   // X20DO9322 - outputs from the PLC
   { id: 'jakaDi3', direction: 'do', channel: 1, label: 'Jaka DI3', robot: 'jaka' },
-  { id: 'jakaDi2', direction: 'do', channel: 2, label: 'Jaka DI2', robot: 'jaka' },
+  // TwinSender sends LIGA_JAKA (TRUE while a cycle runs) in this channel's
+  // byte instead of Jaka_DI2, which is only a 1 s pulse at the start.
+  { id: 'jakaDi2', direction: 'do', channel: 2, label: 'Jaka DI2 · run', robot: 'jaka' },
   { id: 'jakaDi1', direction: 'do', channel: 3, label: 'Jaka DI1', robot: 'jaka' },
   { id: 'staubliDi12', direction: 'do', channel: 5, label: 'Stäubli DI12', robot: 'staubli' },
   { id: 'staubliDi13', direction: 'do', channel: 6, label: 'Stäubli DI13', robot: 'staubli' },

@@ -324,14 +324,36 @@ button.secondary {
   background: var(--on);
 }
 
-.cycle-progress {
-  height: 6px;
-  margin-bottom: 0.75rem;
+.step.is-alarm {
+  color: var(--text);
 }
 
-.cycle-progress > span {
-  background: var(--on);
-  transition: width 0.4s ease;
+.step.is-alarm .step-lamp {
+  background: var(--danger);
+  box-shadow: 0 0 6px rgba(248, 81, 73, 0.7);
+}
+
+.steps-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.2rem;
+}
+
+.panel-sub {
+  margin: 0.9rem 0 0.45rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+.panel-sub:first-of-type {
+  margin-top: 0;
+}
+
+.cycle + .panel-sub {
+  margin-top: 1rem;
 }
 
 .visually-hidden {
