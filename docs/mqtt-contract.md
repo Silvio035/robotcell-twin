@@ -36,7 +36,7 @@ Channel meaning (Table I of the cell handout):
 | Ch | X20DI9371 (input) | X20DO9322 (output) |
 |---|---|---|
 | 1 | Jaka DO7 | Jaka DI3 |
-| 2 | Jaka DO6 | Jaka DI2 |
+| 2 | Jaka DO6 | Jaka DI2 (the packet carries `LIGA_JAKA`: TRUE while a cycle runs) |
 | 3 | Jaka DO5 | Jaka DI1 |
 | 4 | spare | spare |
 | 5 | Stäubli DO4 | Stäubli DI12 |

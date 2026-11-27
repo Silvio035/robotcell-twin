@@ -41,8 +41,15 @@ The tasks follow the whiteboard application ([whiteboard-application.md](whitebo
   square is split into several points so the joint interpolation stays
   close to the straight `movel` line of the real program.
 
-`Jaka DI2` is the "cell running" flag: the PLC holds it TRUE only while a
-cycle runs. When it drops (cycle finished or stop) the robots show **Idle**.
+The `Jaka DI2` byte is the "cell running" flag: `TwinSender` sends
+`LIGA_JAKA` there, TRUE only while a cycle runs (the real `Jaka_DI2` is a
+1 s start pulse). When it drops (cycle finished or stop) the robots show
+**Idle**. A run counts as completed when the PLC's cycle counter changed;
+otherwise (E-stop) the cycle panel resets like the HMI.
+
+`Jaka DI3` stays TRUE for the whole cycle, so the Jaka task starts on its
+rise. `Stäubli DI12` is a 1 s pulse at the start of step 2, enough for the
+200 ms packets to catch it.
 
 ## Objects and ink
 

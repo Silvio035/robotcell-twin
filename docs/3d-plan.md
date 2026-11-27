@@ -25,7 +25,8 @@ What is in it:
   front of the Stäubli, L-shaped plate guides, marker holder (the plate lies
   on the Stäubli table, no stand). Shapes and colours
   follow photos of the cell; sizes stay placeholders.
-- Grey plate with 3 square holes, square part standing on it or on the
+- Grey plate with 3 square holes and its handle block, the square part in the
+  plate's middle hole or on the
   board, marker, ink of the squares, gripper fingers sized to the held object.
 - Phase labels above the robots, camera presets (overview, Stäubli,
   whiteboard, conveyor, Jaka) and orbit controls, red frame on E-stop, grey overlay
