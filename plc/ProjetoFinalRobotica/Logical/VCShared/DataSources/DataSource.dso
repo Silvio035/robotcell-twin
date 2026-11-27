@@ -28,15 +28,6 @@
         <Property Name="UserID" Value="None"/>
         <Property Name="VCType" Value="INTEGER"/>
       </DataPoint>
-      <DataPoint Name="Etapa">
-        <Property Name="ConnectedBySharedResource" Value="False"/>
-        <Property Name="ConnectingVisus" Value="Visualisation\Visu"/>
-        <Property Name="Description" Value=""/>
-        <Property Name="PLCType" Value="INT"/>
-        <Property Name="UpdateTime" Value="Default"/>
-        <Property Name="UserID" Value="None"/>
-        <Property Name="VCType" Value="INTEGER"/>
-      </DataPoint>
       <DataPoint Name="iPecasNoQuadro">
         <Property Name="ConnectedBySharedResource" Value="False"/>
         <Property Name="ConnectingVisus" Value="Visualisation\Visu"/>
@@ -56,24 +47,6 @@
         <Property Name="VCType" Value="INTEGER"/>
       </DataPoint>
       <DataPoint Name="iTempoCiclo_s">
-        <Property Name="ConnectedBySharedResource" Value="False"/>
-        <Property Name="ConnectingVisus" Value="Visualisation\Visu"/>
-        <Property Name="Description" Value=""/>
-        <Property Name="PLCType" Value="INT"/>
-        <Property Name="UpdateTime" Value="Default"/>
-        <Property Name="UserID" Value="None"/>
-        <Property Name="VCType" Value="INTEGER"/>
-      </DataPoint>
-      <DataPoint Name="iPlaca">
-        <Property Name="ConnectedBySharedResource" Value="False"/>
-        <Property Name="ConnectingVisus" Value="Visualisation\Visu"/>
-        <Property Name="Description" Value=""/>
-        <Property Name="PLCType" Value="INT"/>
-        <Property Name="UpdateTime" Value="Default"/>
-        <Property Name="UserID" Value="None"/>
-        <Property Name="VCType" Value="INTEGER"/>
-      </DataPoint>
-      <DataPoint Name="iProgresso">
         <Property Name="ConnectedBySharedResource" Value="False"/>
         <Property Name="ConnectingVisus" Value="Visualisation\Visu"/>
         <Property Name="Description" Value=""/>

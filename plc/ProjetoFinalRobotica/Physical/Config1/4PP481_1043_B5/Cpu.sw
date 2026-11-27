@@ -70,6 +70,7 @@
     <LibraryObject Name="fileio" Source="" Memory="UserROM" Language="Binary" Debugging="true" />
     <LibraryObject Name="astime" Source="" Memory="UserROM" Language="Binary" Debugging="true" />
     <LibraryObject Name="asieccon" Source="" Memory="UserROM" Language="Binary" Debugging="true" />
-    <LibraryObject Name="runtime" Source="" Memory="UserROM" Language="Binary" Debugging="true" />
+    <LibraryObject Name="AsUDP" Source="Libraries.AsUDP.lby" Memory="UserROM" Language="Binary" Debugging="true" />
+    <LibraryObject Name="Runtime" Source="Libraries.Runtime.lby" Memory="UserROM" Language="Binary" Debugging="true" />
   </Libraries>
 </SwConfiguration>

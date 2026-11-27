@@ -88,4 +88,8 @@ VAR
 	TwinSeq : USINT;
 	TwinState : USINT;
 	TwinSendErrors : UDINT; (*failed sends, for diagnosis only*)
+	TwinOpenErr : UDINT;
+	TmrPulso : TON;
+	TmrDI12 : TON;
+	LIGA_JAKA : BOOL;
 END_VAR
