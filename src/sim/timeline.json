@@ -1,6 +1,6 @@
 {
-  "description": "One run of the whiteboard application (one part, one square) as PLC I/O, used by the in-browser demo (src/sim/demo.ts) and the MQTT simulator (scripts/simulate.mjs). Follows NewProgram in plc/ProjetoFinalRobotica. Channels: DIn = X20DI9371 channel n, DOn = X20DO9322 channel n; DO2 is LIGA_JAKA (TRUE while a cycle runs), as TwinSender sends it. DI12 (E-stop, TRUE = safe) is always on. Times in seconds. Jaka (about 14 s to the plate on the conveyor) and conveyor (about 7 s) timed on the cell; Staubli times are estimates.",
-  "durationS": 42,
+  "description": "One run of the whiteboard application (one part, one square) as PLC I/O, used by the in-browser demo (src/sim/demo.ts) and the MQTT simulator (scripts/simulate.mjs). Follows NewProgram in plc/ProjetoFinalRobotica. Channels: DIn = X20DI9371 channel n, DOn = X20DO9322 channel n; DO2 is LIGA_JAKA (TRUE while a cycle runs), as TwinSender sends it. DI12 (E-stop, TRUE = safe) is always on. Times in seconds. Jaka (about 14 s to the plate on the conveyor), conveyor (about 7 s) and Staubli drawing (about 8 s per square) timed on the cell; other Staubli times are estimates.",
+  "durationS": 46,
   "events": [
     { "t": 0.0, "note": "Start: Jaka DI3 (put the plate on the conveyor, on for the whole cycle), LIGA_JAKA and a 1 s Staubli DI13 pulse", "set": { "DO1": true, "DO2": true, "DO6": true }, "step": 1, "running": true },
     { "t": 1.0, "note": "End of the Staubli DI13 pulse", "set": { "DO6": false } },
@@ -17,9 +17,9 @@
     { "t": 27.5, "set": { "DI7": false } },
     { "t": 29.0, "note": "Staubli DO4 done (part on the board, robot home)", "set": { "DI5": true }, "step": 3 },
     { "t": 29.3, "note": "Staubli clears DO4; PLC sets DI14 (pick the marker and draw)", "set": { "DI5": false, "DO7": true }, "step": 4 },
-    { "t": 34.5, "note": "Staubli DO7: square drawn", "set": { "DI8": true } },
-    { "t": 34.8, "set": { "DI8": false } },
-    { "t": 37.0, "note": "Staubli DO5 done (marker stored); PLC clears DI14", "set": { "DI6": true, "DO7": false }, "step": 5 },
-    { "t": 37.3, "note": "Staubli clears DO5; cycle counted, PLC clears Ligar, Jaka DI3 and LIGA_JAKA", "set": { "DI6": false, "DO1": false, "DO2": false }, "step": 0, "running": false, "countUp": true }
+    { "t": 38.8, "note": "Staubli DO7: square drawn (about 8 s of drawing)", "set": { "DI8": true } },
+    { "t": 39.1, "set": { "DI8": false } },
+    { "t": 41.3, "note": "Staubli DO5 done (marker stored); PLC clears DI14", "set": { "DI6": true, "DO7": false }, "step": 5 },
+    { "t": 41.6, "note": "Staubli clears DO5; cycle counted, PLC clears Ligar, Jaka DI3 and LIGA_JAKA", "set": { "DI6": false, "DO1": false, "DO2": false }, "step": 0, "running": false, "countUp": true }
   ]
 }

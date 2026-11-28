@@ -2,6 +2,7 @@ import { lazy, Suspense, useState } from 'react';
 import { CellView2D } from './components/CellView2D';
 import { ConnectPanel } from './components/ConnectPanel';
 import { CyclePanel } from './components/CyclePanel';
+import { HmiPanel } from './components/HmiPanel';
 import { IoTable } from './components/IoTable';
 import { RobotPanel } from './components/RobotPanel';
 import { StatusBar } from './components/StatusBar';
@@ -39,38 +40,41 @@ export function App() {
         <ConnectPanel />
       ) : (
         <main className="layout">
-          <section className="panel cell-panel">
-            <div className="panel-head">
-              <h2>Cell</h2>
-              <div className="tabs" role="tablist">
-                {(['2d', '3d'] as const).map((v) => (
-                  <button
-                    key={v}
-                    type="button"
-                    role="tab"
-                    aria-selected={view === v}
-                    className={view === v ? '' : 'secondary'}
-                    onClick={() => selectView(v)}
-                  >
-                    {v === '2d' ? 'Top view' : '3D'}
-                  </button>
-                ))}
+          <div className="main-col">
+            <section className="panel cell-panel">
+              <div className="panel-head">
+                <h2>Cell</h2>
+                <div className="tabs" role="tablist">
+                  {(['2d', '3d'] as const).map((v) => (
+                    <button
+                      key={v}
+                      type="button"
+                      role="tab"
+                      aria-selected={view === v}
+                      className={view === v ? '' : 'secondary'}
+                      onClick={() => selectView(v)}
+                    >
+                      {v === '2d' ? 'Top view' : '3D'}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
-            {view === '2d' ? (
-              <CellView2D io={io} stale={stale} now={now} />
-            ) : (
-              <View3DBoundary>
-                <Suspense fallback={<p className="muted">Loading the 3D view…</p>}>
-                  <Cell3D stale={stale} emergency={!stale && isEmergencyActive(io) === true} />
-                </Suspense>
-              </View3DBoundary>
-            )}
-          </section>
+              {view === '2d' ? (
+                <CellView2D io={io} stale={stale} now={now} />
+              ) : (
+                <View3DBoundary>
+                  <Suspense fallback={<p className="muted">Loading the 3D view…</p>}>
+                    <Cell3D stale={stale} emergency={!stale && isEmergencyActive(io) === true} />
+                  </Suspense>
+                </View3DBoundary>
+              )}
+            </section>
+            <RobotPanel now={now} />
+            <HmiPanel now={now} />
+          </div>
           <aside className="side">
             <CyclePanel now={now} />
             <IoTable io={stale ? null : io} />
-            <RobotPanel now={now} />
           </aside>
         </main>
       )}

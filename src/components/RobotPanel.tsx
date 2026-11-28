@@ -77,9 +77,11 @@ export function RobotPanel({ now }: { now: number }) {
   return (
     <section className="panel">
       <h2>Robots</h2>
-      {ROBOT_IDS.map((id) => (
-        <RobotCard key={id} robot={id} now={now} />
-      ))}
+      <div className="robots">
+        {ROBOT_IDS.map((id) => (
+          <RobotCard key={id} robot={id} now={now} />
+        ))}
+      </div>
     </section>
   );
 }
