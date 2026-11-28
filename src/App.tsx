@@ -2,6 +2,7 @@ import { lazy, Suspense, useState } from 'react';
 import { CellView2D } from './components/CellView2D';
 import { ConnectPanel } from './components/ConnectPanel';
 import { CyclePanel } from './components/CyclePanel';
+import { HmiPanel } from './components/HmiPanel';
 import { IoTable } from './components/IoTable';
 import { RobotPanel } from './components/RobotPanel';
 import { StatusBar } from './components/StatusBar';
@@ -69,6 +70,7 @@ export function App() {
               )}
             </section>
             <RobotPanel now={now} />
+            <HmiPanel now={now} />
           </div>
           <aside className="side">
             <CyclePanel now={now} />

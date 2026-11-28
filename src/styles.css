@@ -98,6 +98,53 @@ code {
   border-top: none;
 }
 
+/* HMI replica: the panel screen in a dark bezel, 4:3 like the Power Panel. */
+.hmi-bezel {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 14px;
+  background: #3a3f46;
+  border: 1px solid #23272c;
+  border-radius: 10px;
+  box-shadow: inset 0 0 0 4px #4a5058;
+}
+
+.hmi-screen {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 2px;
+}
+
+.hmi-text {
+  fill: #000;
+  font: 13px Arial, Helvetica, sans-serif;
+}
+
+.hmi-value {
+  fill: #000;
+  font: 13px Arial, Helvetica, sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+
+.hmi-button {
+  fill: #e4e6ee;
+  stroke: #8a8f99;
+  stroke-width: 1;
+}
+
+.hmi-button.is-pressed {
+  fill: #c9ccd6;
+}
+
+.hmi-button-text {
+  font: bold 14px Arial, Helvetica, sans-serif;
+}
+
+.small-inline {
+  font-size: 0.75rem;
+}
+
 .side {
   display: flex;
   flex-direction: column;
