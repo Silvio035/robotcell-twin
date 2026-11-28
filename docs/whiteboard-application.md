@@ -34,9 +34,10 @@ The part stays upright the whole time (the Stäubli gripper is vertical)
 and is gripped by two sides.
 
 Times measured on the cell: the Jaka takes about 14 s from the command
-(`DI3`) to the plate released on the conveyor, and the conveyor about 7 s
-to bring the plate to the Stäubli sensor. The twin's defaults and the demo
-run use these values.
+(`DI3`) to the plate released on the conveyor, the conveyor about 7 s to
+bring the plate to the Stäubli sensor, and the Stäubli about 8 s to draw
+the square. The twin's defaults and the demo run use these values; with
+the real cell the twin also refines each duration from the runs it sees.
 
 For the next run the operator puts the plate with the part back at the
 Jaka, takes the part off the board and wipes it, then presses **Ligar**.

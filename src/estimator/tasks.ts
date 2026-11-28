@@ -48,7 +48,8 @@ const partSegments: SegmentDef[] = STAUBLI_PART_POSES.flatMap((p, i): SegmentDef
 const squareSegments: SegmentDef[] = STAUBLI_SQUARES.map((path, i) => ({
   label: `Drawing ${squareName(i)}`,
   path,
-  defaultMs: 4000,
+  // The real Stäubli takes about 8 s per square (timed on the cell).
+  defaultMs: 8000,
   noLift: true,
   meta: { square: i },
   endsOn: [{ signal: 'staubliDo7', when: 'rise', optional: true }],
