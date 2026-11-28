@@ -7,7 +7,7 @@ import { STEP_LABELS } from '../estimator/items';
 import { PART_COUNT } from '../model/layout';
 import { useTwinStore } from '../state/store';
 
-const LAMP_TEXT: Record<Lamp, string> = { wait: 'waiting', run: 'running', done: 'done', alarm: 'active' };
+const LAMP_TEXT: Record<Lamp, string> = { wait: 'waiting', run: 'running', done: 'done' };
 
 const ONE = PART_COUNT === 1;
 const STEP_NAMES = [
@@ -60,9 +60,6 @@ export function CyclePanel({ now }: { now: number }) {
         <LampItem label="Jaka" lamp={hmi.plateAt === 'jaka' ? 'done' : 'wait'} />
         <LampItem label="Conveyor" lamp={hmi.plateAt === 'conveyor' ? 'done' : 'wait'} />
         <LampItem label="Stäubli" lamp={hmi.plateAt === 'staubli' ? 'done' : 'wait'} />
-      </ul>
-      <ul className="steps">
-        <LampItem label="Emergency stop (red = pressed)" lamp={hmi.emergency ? 'alarm' : 'wait'} />
       </ul>
     </section>
   );

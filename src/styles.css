@@ -391,14 +391,6 @@ button.secondary {
   background: var(--on);
 }
 
-.step.is-alarm {
-  color: var(--text);
-}
-
-.step.is-alarm .step-lamp {
-  background: var(--danger);
-  box-shadow: 0 0 6px rgba(248, 81, 73, 0.7);
-}
 
 .steps-row {
   display: flex;
