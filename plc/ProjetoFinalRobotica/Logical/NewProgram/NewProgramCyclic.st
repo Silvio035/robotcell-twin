@@ -162,8 +162,6 @@ PROGRAM _CYCLIC
 	IF iPlaca = 1 THEN iCorPlacaEsteira := COR_FEITO; ELSE iCorPlacaEsteira := COR_ESPERA; END_IF;
 	IF iPlaca = 2 THEN iCorPlacaStaubli := COR_FEITO; ELSE iCorPlacaStaubli := COR_ESPERA; END_IF;
 
-	IF NOT Emergencia THEN iCorEmergencia := COR_ALARME; ELSE iCorEmergencia := COR_ESPERA; END_IF;
-
 	iProgresso := iPecasNoQuadro + iQuadrados;	//0..2*NUM_PECAS on the progress bar
 
 	//Digital twin: send the I/O state to the bridge PC (TwinSender.st)

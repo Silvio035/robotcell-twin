@@ -15,14 +15,13 @@ const PAL = {
   green: '#00AA00',
   white: '#FFFFFF',
   yellow: '#FFFF00',
-  red: '#FF0000',
   done: '#66CC00',
   blue: '#0099CC',
   grey: '#D9D9D9',
   lightGrey: '#F2F2F2',
 };
 
-const LAMP_FILL: Record<Lamp, string> = { wait: PAL.grey, run: PAL.yellow, done: PAL.done, alarm: PAL.red };
+const LAMP_FILL: Record<Lamp, string> = { wait: PAL.grey, run: PAL.yellow, done: PAL.done };
 
 const FONT = 13;
 
@@ -126,7 +125,7 @@ export function HmiPanel({ now }: { now: number }) {
           <Box x={449} y={165} w={70} h={70} fill={PAL.white} />
           <Box x={466} y={182} w={36} h={36} fill={partOnBoard ? PAL.blue : PAL.lightGrey} />
 
-          {/* Plate position and E-stop */}
+          {/* Plate position */}
           <Txt x={343} y={302}>Placa está em:</Txt>
           <Box x={343} y={326} w={20} h={20} fill={plateLamp('jaka')} />
           <Txt x={368} y={326}>Jaka</Txt>
@@ -134,8 +133,6 @@ export function HmiPanel({ now }: { now: number }) {
           <Txt x={458} y={326}>Esteira</Txt>
           <Box x={523} y={326} w={20} h={20} fill={plateLamp('staubli')} />
           <Txt x={548} y={326}>Stäubli</Txt>
-          <Box x={343} y={369} w={20} h={20} fill={hmi.emergency ? PAL.red : PAL.grey} />
-          <Txt x={368} y={369}>Emergência (vermelho = acionada)</Txt>
 
           {/* Legend */}
           <Txt x={16} y={450}>Legenda:</Txt>
@@ -144,8 +141,7 @@ export function HmiPanel({ now }: { now: number }) {
               [91, PAL.grey, 'Aguardando'],
               [201, PAL.yellow, 'Em andamento'],
               [326, PAL.done, 'Feito'],
-              [401, PAL.red, 'Emergência'],
-              [511, PAL.blue, 'Peça'],
+              [401, PAL.blue, 'Peça'],
             ] as const
           ).map(([x, fill, label]) => (
             <g key={label}>

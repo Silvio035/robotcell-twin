@@ -3,14 +3,14 @@
 // colours and counters in NewProgramCyclic.st. Shared by the cycle panel and
 // the HMI replica so both always agree. Pure: values in, values out.
 
-import { isEmergencyActive, signalValue, type PlcIoSnapshot } from '../model/messages';
+import { signalValue, type PlcIoSnapshot } from '../model/messages';
 import { plcStep, type ItemsEstimate } from './items';
 
 /** Assignment limit for one run. */
 export const MAX_CYCLE_S = 7 * 60;
 
-/** grey = waiting, yellow = running, green = done, red = alarm (HMI palette 250 / 46 / 155 / 51). */
-export type Lamp = 'wait' | 'run' | 'done' | 'alarm';
+/** grey = waiting, yellow = running, green = done (HMI palette 250 / 46 / 155). */
+export type Lamp = 'wait' | 'run' | 'done';
 
 export type PlatePlaceHmi = 'jaka' | 'conveyor' | 'staubli';
 
@@ -25,7 +25,6 @@ export interface HmiState {
   overLimit: boolean;
   count: number | null;
   plateAt: PlatePlaceHmi;
-  emergency: boolean;
   /** Start request (Ligar), when the bridge sends it. */
   start: boolean;
 }
@@ -74,7 +73,6 @@ export function hmiState(io: PlcIoSnapshot | null, items: ItemsEstimate | null, 
     overLimit: seconds !== null && seconds > MAX_CYCLE_S,
     count: io?.count ?? null,
     plateAt,
-    emergency: isEmergencyActive(io) === true,
     start: io?.running === true,
   };
 }

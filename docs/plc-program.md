@@ -124,15 +124,16 @@ Desligar button or the progress bar, and the cycle time shows only seconds.*
 | Part on the board, square, cycle time (s), completed cycles | `iPecasNoQuadro`, `iQuadrados`, `iTempoCiclo_s`, `iContador` |
 | Whiteboard: the part and its square light up | `iCorPeca`, `iCorQuadrado` |
 | Plate position: Jaka / conveyor / Stäubli | `iCorPlacaJaka`, `iCorPlacaEsteira`, `iCorPlacaStaubli` (from `iPlaca`) |
-| E-stop lamp | `iCorEmergencia` |
-| Color legend (bottom row) | Fixed swatches: waiting, running, done, E-stop, part |
+| Color legend (bottom row) | Fixed swatches: waiting, running, done, part |
 
 Lamp colors are palette indexes computed in the PLC, the same technique the
 previous page used: grey 250 = waiting, yellow 46 = running, green 155 =
-done, red 51 = E-stop. The page only uses control types that already existed
+done. The page only uses control types that already existed
 in the project (button, text, shape, bar graph) plus the numeric output of
 the B&R sample. After the first build, adjust positions and fonts in the
 Automation Studio page editor as needed; from then on edit the page there.
+The page has no E-stop lamp: the E-stop input still stops the cycle in the
+PLC program, it is just not shown on the HMI.
 
 The page's texts live in its embedded text group. Each `<Text ID>` needs an
 entry in the group's `<IndexMap>` (ID → index); the buttons (`TextIndex`)

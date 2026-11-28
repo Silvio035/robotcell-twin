@@ -613,31 +613,6 @@
           <Property Name="Top" Value="326"/>
           <Property Name="Width" Value="60"/>
         </Control>
-        <Control ClassId="0x00001001" Name="Shape_16">
-          <Property Name="BackColor" Value="250"/>
-          <Property Name="ColorDatapoint" Value="Source[global].Variable[DataSource.NewProgram.iCorEmergencia]"/>
-          <Property Name="ControlID" Value="0"/>
-          <Property Name="Description" Value=""/>
-          <Property Name="Height" Value="20"/>
-          <Property Name="Left" Value="343"/>
-          <Property Name="StyleClass" Value="Source[relative:StyleGroup].StyleClass[Shape]"/>
-          <Property Name="Top" Value="369"/>
-          <Property Name="Width" Value="20"/>
-        </Control>
-        <Control ClassId="0x00001004" Name="Text_19">
-          <Property Name="ControlID" Value="0"/>
-          <Property Name="Description" Value=""/>
-          <Property Name="Height" Value="20"/>
-          <Property Name="Left" Value="368"/>
-          <Property Name="SimulationIndex" Value="0"/>
-          <Property Name="SimulationValue" Value=""/>
-          <Property Name="StyleClass" Value="Source[relative:StyleGroup].StyleClass[Text]"/>
-          <Property Name="TextGroup" Value="Source[embedded].TextGroup"/>
-          <Property Name="TextIndexOffset" Value="35"/>
-          <Property Name="TextSource" Value="SingleText"/>
-          <Property Name="Top" Value="369"/>
-          <Property Name="Width" Value="245"/>
-        </Control>
         <Control ClassId="0x00001004" Name="Text_20">
           <Property Name="ControlID" Value="0"/>
           <Property Name="Description" Value=""/>
@@ -724,8 +699,8 @@
           <Property Name="Top" Value="450"/>
           <Property Name="Width" Value="50"/>
         </Control>
-        <Control ClassId="0x00001001" Name="Legenda_Cor4">
-          <Property Name="BackColor" Value="51"/>
+        <Control ClassId="0x00001001" Name="Legenda_Cor5">
+          <Property Name="BackColor" Value="204"/>
           <Property Name="ControlID" Value="0"/>
           <Property Name="Description" Value=""/>
           <Property Name="Height" Value="14"/>
@@ -734,35 +709,11 @@
           <Property Name="Top" Value="453"/>
           <Property Name="Width" Value="14"/>
         </Control>
-        <Control ClassId="0x00001004" Name="Legenda_Texto4">
-          <Property Name="ControlID" Value="0"/>
-          <Property Name="Description" Value=""/>
-          <Property Name="Height" Value="20"/>
-          <Property Name="Left" Value="421"/>
-          <Property Name="SimulationIndex" Value="0"/>
-          <Property Name="SimulationValue" Value=""/>
-          <Property Name="StyleClass" Value="Source[relative:StyleGroup].StyleClass[Text]"/>
-          <Property Name="TextGroup" Value="Source[embedded].TextGroup"/>
-          <Property Name="TextIndexOffset" Value="41"/>
-          <Property Name="TextSource" Value="SingleText"/>
-          <Property Name="Top" Value="450"/>
-          <Property Name="Width" Value="85"/>
-        </Control>
-        <Control ClassId="0x00001001" Name="Legenda_Cor5">
-          <Property Name="BackColor" Value="204"/>
-          <Property Name="ControlID" Value="0"/>
-          <Property Name="Description" Value=""/>
-          <Property Name="Height" Value="14"/>
-          <Property Name="Left" Value="511"/>
-          <Property Name="StyleClass" Value="Source[relative:StyleGroup].StyleClass[Shape]"/>
-          <Property Name="Top" Value="453"/>
-          <Property Name="Width" Value="14"/>
-        </Control>
         <Control ClassId="0x00001004" Name="Legenda_Texto5">
           <Property Name="ControlID" Value="0"/>
           <Property Name="Description" Value=""/>
           <Property Name="Height" Value="20"/>
-          <Property Name="Left" Value="531"/>
+          <Property Name="Left" Value="421"/>
           <Property Name="SimulationIndex" Value="0"/>
           <Property Name="SimulationValue" Value=""/>
           <Property Name="StyleClass" Value="Source[relative:StyleGroup].StyleClass[Text]"/>
